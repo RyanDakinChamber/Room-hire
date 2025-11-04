@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staffordshire Chambers Room Hire</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand">
+        <img src="assets/logo.svg" alt="Staffordshire Chambers" class="brand-logo" />
+        <div class="brand-meta">
+          <h1>Room Hire Bookings</h1>
+          <p>Plan, track and manage all Staffordshire Chambers spaces in one place.</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="today-button" class="ghost">Today</button>
+        <div class="day-switcher">
+          <button id="prev-day" aria-label="Previous day">&#8592;</button>
+          <div id="selected-date-label" class="selected-date"></div>
+          <button id="next-day" aria-label="Next day">&#8594;</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="sidebar">
+        <section class="mini-calendar" aria-label="Mini calendar">
+          <div class="mini-calendar-header">
+            <button id="mini-prev" aria-label="Previous month">&#8592;</button>
+            <div>
+              <div id="mini-month" class="month-label"></div>
+              <div id="mini-year" class="year-label"></div>
+            </div>
+            <button id="mini-next" aria-label="Next month">&#8594;</button>
+          </div>
+          <div class="mini-calendar-grid" id="mini-calendar-grid"></div>
+        </section>
+
+        <section class="booking-form" aria-label="Booking form">
+          <h2 id="form-title">Create a booking</h2>
+          <form id="booking-form">
+            <input type="hidden" id="booking-id" />
+            <div class="field">
+              <label for="booking-date">Date</label>
+              <input type="date" id="booking-date" required />
+            </div>
+            <div class="field">
+              <label>Rooms</label>
+              <div class="checkbox-grid" id="room-options"></div>
+            </div>
+            <div class="field field-inline">
+              <div>
+                <label for="start-time">Start time</label>
+                <input type="time" id="start-time" step="1800" required />
+              </div>
+              <div>
+                <label for="end-time">End time</label>
+                <input type="time" id="end-time" step="1800" required />
+              </div>
+            </div>
+            <div class="field">
+              <label for="booker-name">Booked by</label>
+              <input type="text" id="booker-name" placeholder="Name or organisation" required />
+            </div>
+            <div class="field">
+              <label for="attendees">Number of attendees</label>
+              <input type="number" id="attendees" min="1" placeholder="e.g. 15" required />
+            </div>
+            <div class="field">
+              <span>Room layout styles</span>
+              <div class="checkbox-grid" id="layout-options"></div>
+            </div>
+            <div class="field">
+              <span>Equipment &amp; refreshments</span>
+              <div class="checkbox-grid" id="service-options"></div>
+            </div>
+            <div class="field">
+              <label for="notes">Additional notes</label>
+              <textarea id="notes" rows="3" placeholder="Catering notes, access needs, etc."></textarea>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="primary" id="save-booking">Save booking</button>
+              <button type="button" class="ghost" id="reset-form">Clear</button>
+            </div>
+            <div class="edit-actions" id="edit-actions" hidden>
+              <button type="button" class="danger" id="delete-booking">Delete booking</button>
+              <button type="button" class="ghost" id="cancel-edit">Cancel edit</button>
+            </div>
+          </form>
+        </section>
+      </aside>
+
+      <section class="calendar" aria-label="Room schedule">
+        <div class="legend" aria-hidden="true">
+          <div class="legend-item"><span class="swatch primary"></span>Confirmed booking</div>
+          <div class="legend-item"><span class="swatch tentative"></span>Current selection</div>
+        </div>
+        <div class="timeline" id="timeline">
+          <div class="timeline-hours" id="timeline-hours"></div>
+          <div class="calendar-grid" id="calendar-grid"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,1 +1,23 @@
-Read Me
+# Staffordshire Chambers Room Hire
+
+A lightweight booking tool for Staffordshire Chambers to visualise and manage all meeting spaces.
+
+## Getting started
+
+1. Open `index.html` in a modern web browser (Chrome, Edge, Firefox or Safari).
+2. The application stores bookings in your browser's local storage so your data persists between visits on the same device.
+
+## Features
+
+- Branded interface using Staffordshire Chambers colours and logo.
+- Mini calendar for quickly jumping between dates.
+- Daily room overview with a timeline view for all rooms simultaneously.
+- Booking form supporting multiple rooms, half-hour increments and longer sessions.
+- Track attendee counts, preferred room layouts, equipment, refreshments and lunch requirements.
+- Edit or delete existing bookings directly from the timeline.
+
+## Notes
+
+- Bookings must be at least 30 minutes long.
+- Overlapping bookings in the same room are prevented automatically.
+- To clear all saved bookings, clear your browser storage for this site.
