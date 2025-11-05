@@ -1,23 +1,28 @@
 # Staffordshire Chambers Room Hire
 
-A lightweight booking tool for Staffordshire Chambers to visualise and manage all meeting spaces.
+A branded booking dashboard for Staffordshire Chambers that tracks all rooms, layouts, services and equipment in one place.
 
 ## Getting started
 
-1. Open `index.html` in a modern web browser (Chrome, Edge, Firefox or Safari).
-2. The application stores bookings in your browser's local storage so your data persists between visits on the same device.
+1. Start the application (serves the web app and JSON API)
+   ```bash
+   npm start
+   ```
+2. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+Bookings are stored in a shared JSON database (`data/bookings.json`), so everyone connected to the same server sees live updates and can amend entries together.
 
 ## Features
 
-- Branded interface using Staffordshire Chambers colours and logo.
-- Mini calendar for quickly jumping between dates.
-- Daily room overview with a timeline view for all rooms simultaneously.
-- Booking form supporting multiple rooms, half-hour increments and longer sessions.
-- Track attendee counts, preferred room layouts, equipment, refreshments and lunch requirements.
-- Edit or delete existing bookings directly from the timeline.
+- Staffordshire Chambers branding, logo and colour palette.
+- Mini calendar to jump between dates and a daily multi-room timeline.
+- Click directly on a room timeline to draft a booking; edit and delete from the same view.
+- Support for multiple rooms per booking with conflict detection across shared rooms.
+- Capture attendee counts, layout preferences, equipment and catering requirements.
+- Persistent JSON storage with a REST API for create, update and delete actions.
 
 ## Notes
 
-- Bookings must be at least 30 minutes long.
-- Overlapping bookings in the same room are prevented automatically.
-- To clear all saved bookings, clear your browser storage for this site.
+- Bookings must be created in 30 minute increments and run for at least 30 minutes.
+- Conflicting bookings in the same room and time range are blocked with helpful error messages.
+- The data file lives in `data/bookings.json`; back it up or remove it to reset all bookings.
