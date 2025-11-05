@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Room Hire Scheduler</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="page-header">
+      <h1>Room Hire Scheduler</h1>
+      <p>Book your room hire slots without losing sight of the important details.</p>
+    </header>
+    <main class="layout">
+      <section class="panel add-booking" aria-labelledby="add-booking-title">
+        <div class="panel__header">
+          <h2 id="add-booking-title">Add Room Hire</h2>
+          <p class="panel__subtitle">
+            Complete the form to block out a time slot. The details remain visible below.
+          </p>
+        </div>
+        <form id="booking-form" class="booking-form">
+          <label class="booking-form__field">
+            <span>Event name</span>
+            <input type="text" name="name" required aria-required="true" />
+          </label>
+          <label class="booking-form__field">
+            <span>Date</span>
+            <input type="date" name="date" required aria-required="true" />
+          </label>
+          <div class="booking-form__row">
+            <label class="booking-form__field">
+              <span>Start time</span>
+              <input type="time" name="start" required aria-required="true" />
+            </label>
+            <label class="booking-form__field">
+              <span>End time</span>
+              <input type="time" name="end" required aria-required="true" />
+            </label>
+          </div>
+          <label class="booking-form__field">
+            <span>Notes</span>
+            <textarea name="notes" rows="3" placeholder="Optional"></textarea>
+          </label>
+          <button type="submit" class="button">Book room</button>
+          <p class="form-feedback" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+      <section class="panel calendar" aria-labelledby="calendar-title">
+        <div class="panel__header">
+          <h2 id="calendar-title">Calendar</h2>
+          <p class="panel__subtitle">
+            Upcoming bookings are listed below. Details stay visible after a booking is added.
+          </p>
+        </div>
+        <ul id="calendar-list" class="calendar-list" aria-live="polite" aria-label="Bookings"></ul>
+        <section class="booking-details" aria-labelledby="booking-details-title">
+          <div class="booking-details__header">
+            <h3 id="booking-details-title">Booking details</h3>
+            <p>
+              Newly added bookings appear here and remain visible even after they are saved to the calendar.
+            </p>
+          </div>
+          <div id="booking-details-content" class="booking-details__content" role="log" aria-live="polite"></div>
+        </section>
+      </section>
+    </main>
+    <template id="booking-template">
+      <article class="booking">
+        <header class="booking__header">
+          <h4 class="booking__title"></h4>
+          <p class="booking__time"></p>
+        </header>
+        <p class="booking__notes"></p>
+      </article>
+    </template>
+    <script src="app.js" type="module"></script>
+  </body>
+</html>

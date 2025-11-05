@@ -1,1 +1,7 @@
-Read Me
+# Room Hire Scheduler
+
+A lightweight static prototype that demonstrates capturing room-hire bookings while keeping the booking details visible after the reservation is added to the calendar.
+
+## Getting started
+
+Open `index.html` in a browser. Use the form to add bookings; they appear in the calendar list while the detail cards remain accessible underneath.
