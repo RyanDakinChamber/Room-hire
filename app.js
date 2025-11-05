@@ -86,7 +86,11 @@ function startOfMonth(date) {
 }
 
 function toISODate(date) {
-  return date.toISOString().split('T')[0];
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 function toMinutes(timeString) {
@@ -328,11 +332,23 @@ function renderTimeline() {
       block.style.top = `${0.6 + laneIndex * laneSpacingRem}rem`;
       block.style.height = '2.6rem';
 
-      block.innerHTML = `
-        <div class="time">${formatDisplayTime(booking.start)} – ${formatDisplayTime(booking.end)}</div>
-        <div class="title">${booking.name}</div>
-        <div class="meta">${booking.attendees} attendee${booking.attendees === 1 ? '' : 's'}${booking.layouts.length ? ` • ${booking.layouts.map(capitaliseLabel).join(', ')}` : ''}</div>
-      `;
+      const timeEl = document.createElement('div');
+      timeEl.className = 'time';
+      timeEl.textContent = `${formatDisplayTime(booking.start)} – ${formatDisplayTime(booking.end)}`;
+
+      const titleEl = document.createElement('div');
+      titleEl.className = 'title';
+      titleEl.textContent = booking.name;
+
+      const metaEl = document.createElement('div');
+      metaEl.className = 'meta';
+      const attendeeLabel = `${booking.attendees} attendee${booking.attendees === 1 ? '' : 's'}`;
+      const layoutLabel = booking.layouts.length
+        ? ` • ${booking.layouts.map(capitaliseLabel).join(', ')}`
+        : '';
+      metaEl.textContent = `${attendeeLabel}${layoutLabel}`;
+
+      block.append(timeEl, titleEl, metaEl);
 
       const details = [
         `Rooms: ${booking.rooms.join(', ')}`,
@@ -363,11 +379,21 @@ function renderTimeline() {
       block.style.height = '2.6rem';
       const title = tentative.name && tentative.name.trim() ? tentative.name : 'Draft booking';
       const attendees = Number.parseInt(tentative.attendees ?? 0, 10) || 0;
-      block.innerHTML = `
-        <div class="time">${formatDisplayTime(tentative.start)} – ${formatDisplayTime(tentative.end)}</div>
-        <div class="title">${title}</div>
-        <div class="meta">${attendees ? `${attendees} attendee${attendees === 1 ? '' : 's'}` : 'Select attendees'}</div>
-      `;
+      const tentativeTime = document.createElement('div');
+      tentativeTime.className = 'time';
+      tentativeTime.textContent = `${formatDisplayTime(tentative.start)} – ${formatDisplayTime(tentative.end)}`;
+
+      const tentativeTitle = document.createElement('div');
+      tentativeTitle.className = 'title';
+      tentativeTitle.textContent = title;
+
+      const tentativeMeta = document.createElement('div');
+      tentativeMeta.className = 'meta';
+      tentativeMeta.textContent = attendees
+        ? `${attendees} attendee${attendees === 1 ? '' : 's'}`
+        : 'Select attendees';
+
+      block.append(tentativeTime, tentativeTitle, tentativeMeta);
       timeline.appendChild(block);
       laneHeights[0] = Math.max(laneHeights[0] ?? 0, endMinutes);
     }
