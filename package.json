@@ -1,0 +1,10 @@
+{
+  "name": "room-hire",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Staffordshire Chambers room booking dashboard",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js"
+  }
+}

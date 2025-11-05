@@ -1,1 +1,57 @@
-Read Me
+# Staffordshire Chambers Room Hire
+
+A branded booking dashboard for Staffordshire Chambers that tracks all rooms, layouts, services and equipment in one place.
+
+## Getting started
+
+1. Start the application (serves the web app and JSON API)
+   ```bash
+   npm start
+   ```
+2. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+Bookings are stored in a shared JSON database (`data/bookings.json`), so everyone connected to the same server sees live updates and can amend entries together.
+
+## Features
+
+- Staffordshire Chambers branding, logo and colour palette.
+- Mini calendar to jump between dates and a daily multi-room timeline.
+- Click directly on a room timeline to draft a booking; edit and delete from the same view.
+- Support for multiple rooms per booking with conflict detection across shared rooms.
+- Capture attendee counts, layout preferences, equipment and catering requirements.
+- Persistent JSON storage with a REST API for create, update and delete actions.
+
+## Notes
+
+- Bookings must be created in 30 minute increments and run for at least 30 minutes.
+- Conflicting bookings in the same room and time range are blocked with helpful error messages.
+- The data file lives in `data/bookings.json`; back it up or remove it to reset all bookings.
+
+## Deploying on Hostinger
+
+1. **Prepare the files**
+   - On your local machine, run `npm install` once so `package-lock.json` is generated (Hostinger expects it).
+   - Run `npm run check` if you want to verify the code builds.
+   - Commit any changes and push to the repository you will deploy from (Git or ZIP upload both work).
+2. **Create a Node.js app in hPanel**
+   - Log into Hostinger hPanel, open **Websites ▸ Manage** for your domain, then choose **Node.js** from the sidebar.
+   - Click **Create application**, choose the domain/subdomain you want, and set the application path (for example, `/home/username/domains/bookings.yourdomain.com`).
+   - Pick Node.js 18 or newer to match the app requirements.
+3. **Upload the project**
+   - Use the **File Manager** or SFTP to upload the entire project into the application path.
+   - Ensure `package.json`, `package-lock.json`, `server.js`, `app.js`, `styles.css`, and the `assets` folder are present.
+   - Create an empty `data` folder alongside them if you want to pre-create the storage location (the server will create it on first run otherwise).
+4. **Install dependencies on Hostinger**
+   - In the Node.js page, open the **Terminal** and run `npm install` inside the application path.
+   - Confirm that `node_modules` appears after the installation completes.
+5. **Configure the start command**
+   - In the Node.js application settings, set the **Application startup file** to `server.js`.
+   - Set the **Application startup command** to `npm start` (or `node server.js` if you prefer).
+   - Save the configuration and click **Restart** so Hostinger restarts the app with the new settings.
+6. **Point your subdomain**
+   - In hPanel, go to **Domains ▸ Subdomains** (or **DNS Zone Editor**) and create the subdomain (e.g., `bookings.example.com`) pointing to the same hosting account.
+   - Wait for DNS to propagate, then ensure the Node.js app is linked to that subdomain in the Node.js manager.
+7. **Secure and maintain**
+   - Enable the free SSL certificate for the subdomain in the **SSL** section of hPanel and force HTTPS via the **SSL/TLS** settings.
+   - Back up `/home/username/domains/…/data/bookings.json` regularly because it contains all bookings.
+   - When updating the app, upload the new files, rerun `npm install` if dependencies changed, and restart the Node.js application.
