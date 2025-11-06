@@ -3,8 +3,13 @@
   font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   font-size: 16px;
-  background-color: #f2f5f9;
+  background-color: #f7f1f2;
   color: #1d2733;
+  --brand-primary: #c41c33;
+  --brand-primary-dark: #99182a;
+  --brand-primary-light: #fde4e7;
+  --brand-accent: #f87171;
+  --brand-text-strong: #7f1d1d;
 }
 
 * {
@@ -14,20 +19,21 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(180deg, #f6f9fc 0%, #e8eff6 100%);
+  background: linear-gradient(180deg, #fef2f2 0%, #fee7ea 100%);
 }
 
 .page-header {
   padding: 3rem 1.5rem 1.5rem;
   text-align: center;
-  background: rgba(255, 255, 255, 0.65);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(254, 226, 226, 0.8) 100%);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+  border-bottom: 1px solid rgba(248, 113, 113, 0.35);
 }
 
 .page-header h1 {
   margin: 0 0 0.5rem;
   font-size: clamp(2rem, 3vw, 3rem);
+  color: var(--brand-primary-dark);
 }
 
 .layout {
@@ -39,12 +45,12 @@ body {
 }
 
 .panel {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.88);
   border-radius: 1.5rem;
-  box-shadow: 0 24px 40px rgba(15, 23, 42, 0.1);
+  box-shadow: 0 24px 40px rgba(148, 27, 52, 0.12);
   padding: 1.75rem clamp(1.25rem, 4vw, 2rem);
   backdrop-filter: blur(14px);
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  border: 1px solid rgba(248, 113, 113, 0.3);
 }
 
 .panel.add-booking {
@@ -83,11 +89,12 @@ body {
 .panel__header h2 {
   margin: 0;
   font-size: 1.625rem;
+  color: var(--brand-text-strong);
 }
 
 .panel__subtitle {
   margin: 0.25rem 0 0;
-  color: #4b5563;
+  color: rgba(127, 29, 29, 0.75);
   font-size: 0.95rem;
 }
 
@@ -120,12 +127,12 @@ body {
 .booking-form__field select,
 .booking-form__field textarea {
   appearance: none;
-  border: 1px solid rgba(148, 163, 184, 0.65);
+  border: 1px solid rgba(248, 113, 113, 0.5);
   border-radius: 0.85rem;
   padding: 0.75rem 1rem;
   font: inherit;
   color: inherit;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.96);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -133,14 +140,14 @@ body {
 .booking-form__field select:focus,
 .booking-form__field textarea:focus {
   outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 4px rgba(196, 28, 51, 0.18);
 }
 
 .booking-form__field select {
   cursor: pointer;
-  background-image: linear-gradient(45deg, transparent 50%, #2563eb 50%),
-    linear-gradient(135deg, #2563eb 50%, transparent 50%);
+  background-image: linear-gradient(45deg, transparent 50%, var(--brand-primary) 50%),
+    linear-gradient(135deg, var(--brand-primary) 50%, transparent 50%);
   background-position: calc(100% - 20px) calc(1.1rem), calc(100% - 15px) calc(1.1rem);
   background-size: 6px 6px;
   background-repeat: no-repeat;
@@ -153,9 +160,9 @@ body {
   gap: 0.5rem 1rem;
   margin: 0;
   padding: 1rem 1.25rem;
-  border: 1px solid rgba(148, 163, 184, 0.5);
+  border: 1px solid rgba(248, 113, 113, 0.45);
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.82);
 }
 
 .booking-form__legend {
@@ -174,7 +181,7 @@ body {
 .booking-form__checkbox input {
   width: 1.1rem;
   height: 1.1rem;
-  accent-color: #2563eb;
+  accent-color: var(--brand-primary);
 }
 
 .booking-form__extras {
@@ -193,14 +200,14 @@ body {
   font-size: 1rem;
   font-weight: 600;
   color: #fff;
-  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 16px 24px rgba(59, 130, 246, 0.25);
+  box-shadow: 0 16px 24px rgba(196, 28, 51, 0.28);
 }
 
 .button:active {
@@ -211,7 +218,7 @@ body {
   margin: 0.5rem 0 0;
   min-height: 1.25rem;
   font-size: 0.9rem;
-  color: #059669;
+  color: #16a34a;
   font-weight: 600;
 }
 
@@ -232,7 +239,7 @@ body {
 .modal__overlay {
   position: absolute;
   inset: 0;
-  background: rgba(15, 23, 42, 0.55);
+  background: rgba(76, 5, 14, 0.58);
   backdrop-filter: blur(6px);
 }
 
@@ -244,8 +251,8 @@ body {
   background: rgba(255, 255, 255, 0.97);
   border-radius: 1.75rem;
   padding: clamp(1.5rem, 4vw, 2.25rem);
-  box-shadow: 0 30px 60px rgba(15, 23, 42, 0.25);
-  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 30px 60px rgba(153, 27, 39, 0.25);
+  border: 1px solid rgba(248, 113, 113, 0.35);
 }
 
 .modal__header {
@@ -271,15 +278,15 @@ body {
   height: 2.5rem;
   border-radius: 999px;
   border: none;
-  background: rgba(148, 163, 184, 0.25);
-  color: #111827;
+  background: rgba(196, 28, 51, 0.12);
+  color: var(--brand-text-strong);
   font-size: 1.5rem;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .modal__close:hover {
-  background: rgba(148, 163, 184, 0.45);
+  background: rgba(196, 28, 51, 0.25);
   transform: scale(1.05);
 }
 
@@ -290,11 +297,11 @@ body.has-open-modal {
 .calendar-grid {
   display: grid;
   grid-template-columns: minmax(120px, 160px) repeat(3, minmax(180px, 1fr));
-  border: 1px solid rgba(148, 163, 184, 0.3);
+  border: 1px solid rgba(248, 113, 113, 0.35);
   border-radius: 1.25rem;
   overflow-x: auto;
   overflow-y: hidden;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   position: relative;
 }
 
@@ -304,8 +311,8 @@ body.has-open-modal {
 
 .calendar-grid__cell {
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
-  border-right: 1px solid rgba(148, 163, 184, 0.2);
+  border-bottom: 1px solid rgba(248, 113, 113, 0.18);
+  border-right: 1px solid rgba(248, 113, 113, 0.18);
 }
 
 .calendar-grid__row:last-of-type .calendar-grid__cell {
@@ -321,8 +328,8 @@ body.has-open-modal {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-size: 0.75rem;
-  color: #1f2937;
-  background: rgba(37, 99, 235, 0.08);
+  color: var(--brand-text-strong);
+  background: rgba(244, 63, 94, 0.12);
 }
 
 .calendar-grid__cell--corner,
@@ -332,8 +339,8 @@ body.has-open-modal {
 
 .calendar-grid__cell--time {
   font-weight: 600;
-  color: #1d4ed8;
-  background: rgba(59, 130, 246, 0.08);
+  color: var(--brand-text-strong);
+  background: rgba(254, 226, 226, 0.9);
 }
 
 .calendar-grid__cell--slot {
@@ -341,14 +348,14 @@ body.has-open-modal {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.72);
 }
 
 .calendar-grid__booking {
   padding: 0.5rem 0.75rem;
   border-radius: 0.85rem;
-  background: rgba(37, 99, 235, 0.12);
-  border: 1px solid rgba(37, 99, 235, 0.3);
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.35);
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -357,7 +364,7 @@ body.has-open-modal {
 .calendar-grid__booking-time {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #1d4ed8;
+  color: var(--brand-text-strong);
 }
 
 .calendar-grid__booking-company {
@@ -370,9 +377,9 @@ body.has-open-modal {
   position: relative;
   padding: 1.5rem;
   border-radius: 1.25rem;
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 12px 24px rgba(153, 27, 39, 0.12);
 }
 
 .booking-details__header {
@@ -400,8 +407,8 @@ body.has-open-modal {
 .booking {
   padding: 1rem 1.25rem;
   border-radius: 1rem;
-  background: rgba(59, 130, 246, 0.08);
-  border: 1px solid rgba(37, 99, 235, 0.2);
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.25);
 }
 
 .booking__header {
@@ -422,7 +429,7 @@ body.has-open-modal {
   margin: 0;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #1d4ed8;
+  color: var(--brand-text-strong);
 }
 
 .booking__notes {
@@ -473,75 +480,75 @@ body.has-open-modal {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    background-color: #0f172a;
-    color: #f8fafc;
+    background-color: #1a0b10;
+    color: #fef2f2;
   }
 
   body {
-    background: radial-gradient(circle at top, rgba(37, 99, 235, 0.35), transparent 60%),
-      #0f172a;
+    background: radial-gradient(circle at top, rgba(239, 68, 68, 0.35), transparent 60%),
+      #1a0b10;
   }
 
   .panel {
-    background: rgba(15, 23, 42, 0.75);
-    border-color: rgba(148, 163, 184, 0.35);
+    background: rgba(38, 12, 18, 0.82);
+    border-color: rgba(248, 113, 113, 0.4);
     color: inherit;
   }
 
   .panel__subtitle,
   .booking-details__header p,
   .booking__notes {
-    color: rgba(226, 232, 240, 0.75);
+    color: rgba(254, 226, 226, 0.8);
   }
 
   .booking,
   .calendar-grid__booking {
-    background: rgba(59, 130, 246, 0.18);
-    border-color: rgba(37, 99, 235, 0.45);
+    background: rgba(190, 18, 60, 0.25);
+    border-color: rgba(248, 113, 113, 0.45);
   }
 
   .booking__time {
-    color: #60a5fa;
+    color: #fecdd3;
   }
 
   .calendar-grid {
-    background: rgba(15, 23, 42, 0.75);
-    border-color: rgba(148, 163, 184, 0.35);
+    background: rgba(38, 12, 18, 0.82);
+    border-color: rgba(248, 113, 113, 0.4);
   }
 
   .calendar-grid__cell {
-    border-color: rgba(148, 163, 184, 0.25);
+    border-color: rgba(248, 113, 113, 0.25);
   }
 
   .calendar-grid__cell--time {
-    background: rgba(59, 130, 246, 0.18);
-    color: #93c5fd;
+    background: rgba(127, 29, 29, 0.5);
+    color: #fecaca;
   }
 
   .calendar-grid__row--header .calendar-grid__cell {
-    background: rgba(37, 99, 235, 0.25);
-    color: #e2e8f0;
+    background: rgba(127, 29, 29, 0.5);
+    color: #fee2e2;
   }
 
   .calendar-grid__booking-time {
-    color: #bfdbfe;
+    color: #fecdd3;
   }
 
   .calendar-grid__booking-company {
-    color: #f1f5f9;
+    color: #fee2e2;
   }
 
   .booking-form__fieldset {
-    background: rgba(15, 23, 42, 0.65);
-    border-color: rgba(148, 163, 184, 0.45);
+    background: rgba(38, 12, 18, 0.7);
+    border-color: rgba(248, 113, 113, 0.45);
   }
 
   .booking-form__checkbox {
-    color: #e2e8f0;
+    color: #fee2e2;
   }
 
   .booking__meta-label,
   .booking__meta-value {
-    color: #e2e8f0;
+    color: #fee2e2;
   }
 }

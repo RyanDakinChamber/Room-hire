@@ -4,4 +4,4 @@ A lightweight static prototype that demonstrates capturing room-hire bookings wh
 
 ## Getting started
 
-Open `index.html` in a browser. Use the form to add bookings; they appear in the calendar list while the detail cards remain accessible underneath.
+Open `index.html` in a browser. Use the “New booking” button to launch the form, add the reservation, and see it plotted across the room-by-time calendar grid. The prototype stores entries only in browser memory—there is no shared database or backend service.
