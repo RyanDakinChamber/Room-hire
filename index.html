@@ -5,208 +5,168 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Room Hire Booking App</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <header class="app-header">
-      <div class="app-header__content">
-        <h1>Room Hire Booking App</h1>
-        <p>
-          Organise reservations across multiple rooms without losing visibility of the details that matter. Choose a
-          date to review the schedule, then add bookings through the pop-up form.
-        </p>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="brand" href="#" aria-label="Staffordshire Chambers home">
+          <img src="assets/logo.svg" alt="Staffordshire Chambers" class="brand__logo" />
+          <div class="brand__text">
+            <span class="brand__title">Staffordshire Chambers</span>
+            <span class="brand__subtitle">Room Booking System</span>
+          </div>
+        </a>
+        <nav class="site-header__actions" aria-label="Primary">
+          <button type="button" class="button button--ghost" data-open-form>New booking</button>
+        </nav>
       </div>
     </header>
 
-    <main class="app-shell">
-      <aside class="intro panel" aria-labelledby="intro-title">
-        <div class="panel__header">
-          <h2 id="intro-title">Plan your day</h2>
-          <p class="panel__subtitle">Launch the booking form to capture a reservation and keep it visible.</p>
-        </div>
-        <div class="intro__body">
-          <p>
-            Bookings display on the grid from <strong>08:00</strong> until <strong>20:00</strong>. Select a slot to
-            view more detail in the log underneath the calendar. Use the filters to change the day or jump back to today
-            at any time.
+    <main class="layout">
+      <section class="layout__intro" aria-labelledby="page-title">
+        <div>
+          <p class="layout__eyebrow">Bookings</p>
+          <h1 id="page-title">Room bookings</h1>
+          <p class="layout__description">
+            Review today’s schedule or jump to a different date. Rooms stay visible across the top while times run down the
+            side.
           </p>
-          <button type="button" class="button button--primary" data-modal-open>New booking</button>
         </div>
-        <section class="panel panel--sub" aria-labelledby="tips-title">
-          <div class="panel__header panel__header--compact">
-            <h3 id="tips-title">Quick tips</h3>
-          </div>
-          <ul class="tips-list">
-            <li>Bookings are checked for clashes within the same room and day.</li>
-            <li>Select refreshments or lunch to reveal additional notes fields.</li>
-            <li>Details remain in the activity log after saving the booking.</li>
-          </ul>
-        </section>
-      </aside>
+        <div class="view-controls" aria-label="Change calendar date">
+          <label class="view-controls__field">
+            <span>Date</span>
+            <input type="date" data-view-date aria-label="Select a date to view" />
+          </label>
+          <button type="button" class="button button--ghost" data-go-today>Today</button>
+          <button type="button" class="button button--primary" data-open-form>New booking</button>
+        </div>
+      </section>
 
-      <section class="calendar panel" aria-labelledby="calendar-title">
+      <section class="calendar" aria-labelledby="calendar-title">
         <header class="calendar__header">
-          <div class="calendar__title">
-            <h2 id="calendar-title">Bookings overview</h2>
-            <p class="panel__subtitle">Rooms are listed across the top with times down the side.</p>
-          </div>
-          <div class="calendar__filters">
-            <label class="calendar__filter">
-              <span>Date</span>
-              <input type="date" data-view-date aria-label="Select date to view" />
-            </label>
-            <button type="button" class="button button--ghost" data-go-today>Today</button>
-          </div>
+          <h2 id="calendar-title">Daily overview</h2>
+          <p>Bookings show the time range and company name directly on the grid.</p>
         </header>
+        <div class="calendar__grid" data-calendar role="grid" aria-live="polite"></div>
+      </section>
 
-        <div
-          class="calendar-grid"
-          data-calendar-grid
-          role="grid"
-          aria-describedby="calendar-title"
-          aria-live="polite"
-        ></div>
-
-        <section class="summary panel panel--sub" aria-labelledby="summary-title">
-          <div class="panel__header panel__header--compact">
-            <h3 id="summary-title">Day summary</h3>
-          </div>
-          <p class="summary__empty empty-state" data-summary-empty hidden>No bookings for this day yet.</p>
-          <dl class="summary__list" data-summary></dl>
-        </section>
-
-        <section class="booking-log" aria-labelledby="booking-log-title">
-          <div class="booking-log__header">
-            <h3 id="booking-log-title">Activity log</h3>
-            <p>Every booking appears here so you always have the context, even after refreshing the view.</p>
-          </div>
-          <div id="booking-details-content" class="booking-log__content" role="log" aria-live="polite"></div>
-        </section>
+      <section class="activity" aria-labelledby="activity-title">
+        <div class="activity__header">
+          <h2 id="activity-title">Booking details</h2>
+          <p>All bookings appear here so you can skim the full context at a glance.</p>
+        </div>
+        <div class="activity__list" data-activity role="log" aria-live="polite"></div>
       </section>
     </main>
 
-    <template id="booking-template">
-      <article class="booking" data-booking-card>
-        <header class="booking__header">
-          <h4 class="booking__title"></h4>
-          <p class="booking__time"></p>
+    <template id="activity-template">
+      <article class="activity-card">
+        <header class="activity-card__header">
+          <h3 class="activity-card__title"></h3>
+          <p class="activity-card__time"></p>
         </header>
-        <dl class="booking__meta">
-          <div class="booking__meta-row">
-            <dt>Room</dt>
-            <dd data-meta="room"></dd>
-          </div>
-          <div class="booking__meta-row" data-meta="contact" hidden>
-            <dt>Contact</dt>
-            <dd></dd>
-          </div>
-          <div class="booking__meta-row">
-            <dt>Setup</dt>
-            <dd data-meta="setup"></dd>
-          </div>
-          <div class="booking__meta-row" data-meta="refreshments" hidden>
-            <dt>Refreshments</dt>
-            <dd></dd>
-          </div>
-          <div class="booking__meta-row" data-meta="lunch" hidden>
-            <dt>Lunch</dt>
-            <dd></dd>
-          </div>
-        </dl>
-        <p class="booking__notes"></p>
+        <dl class="activity-card__meta"></dl>
+        <p class="activity-card__notes" hidden></p>
       </article>
     </template>
 
     <div class="modal" data-modal hidden aria-hidden="true">
       <div class="modal__overlay" data-modal-overlay></div>
-      <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="add-booking-title">
-        <button type="button" class="modal__close" data-modal-close aria-label="Close booking form">×</button>
-        <div class="modal__header">
-          <h2 id="add-booking-title">Add room hire</h2>
-          <p>Complete the form to plot a booking on the schedule and add the details to the activity log.</p>
-        </div>
-        <form id="booking-form" class="booking-form">
-          <label class="booking-form__field">
-            <span>Company</span>
-            <input type="text" name="company" required aria-required="true" autocomplete="organization" />
-          </label>
-          <label class="booking-form__field">
-            <span>Contact name</span>
-            <input type="text" name="contact" autocomplete="name" placeholder="Optional" />
-          </label>
-          <label class="booking-form__field">
-            <span>Email</span>
-            <input type="email" name="email" autocomplete="email" placeholder="Optional" />
-          </label>
-          <label class="booking-form__field">
-            <span>Room</span>
-            <select name="room" required aria-required="true">
-              <option value="" disabled selected>Select a room</option>
-              <option>Boardroom</option>
-              <option>Conference Suite</option>
-              <option>Studio</option>
-              <option>Training Room</option>
-            </select>
-          </label>
-          <label class="booking-form__field">
-            <span>Date</span>
-            <input type="date" name="date" required aria-required="true" />
-          </label>
-          <div class="booking-form__row">
-            <label class="booking-form__field">
-              <span>Start time</span>
-              <input type="time" name="start" required aria-required="true" min="08:00" max="20:00" />
-            </label>
-            <label class="booking-form__field">
-              <span>End time</span>
-              <input type="time" name="end" required aria-required="true" min="08:30" max="20:00" />
-            </label>
+      <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <button type="button" class="modal__close" data-modal-close aria-label="Close booking form">&times;</button>
+        <header class="modal__header">
+          <h2 id="modal-title">Add a booking</h2>
+          <p>Capture the essentials for your room hire reservation.</p>
+        </header>
+        <form class="booking-form" id="booking-form" novalidate>
+          <div class="form-field">
+            <label for="company">Company</label>
+            <input id="company" name="company" type="text" required autocomplete="organization" />
           </div>
-          <label class="booking-form__field">
-            <span>Room setup style</span>
-            <select name="setup" required aria-required="true">
-              <option value="" disabled selected>Select a layout</option>
+          <div class="form-field">
+            <label for="contact">Contact name</label>
+            <input id="contact" name="contact" type="text" autocomplete="name" placeholder="Optional" />
+          </div>
+          <div class="form-field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="Optional" />
+          </div>
+          <div class="form-field">
+            <label for="room">Room</label>
+            <select id="room" name="room" required>
+              <option value="" disabled selected>Select a room</option>
+              <option>Room 1</option>
+              <option>Room 2</option>
+              <option>Room 3</option>
+              <option>Room 4</option>
+              <option>Boardroom</option>
+              <option>Chamber Pod</option>
+              <option>Members Lounge Room</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="date">Date</label>
+            <input id="date" name="date" type="date" required />
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="start">Start time</label>
+              <input id="start" name="start" type="time" min="08:00" max="20:00" required />
+            </div>
+            <div class="form-field">
+              <label for="end">End time</label>
+              <input id="end" name="end" type="time" min="08:30" max="20:00" required />
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="setup">Room setup</label>
+            <select id="setup" name="setup">
+              <option value="">Not specified</option>
+              <option>Boardroom</option>
               <option>Theatre</option>
               <option>Classroom</option>
-              <option>Boardroom</option>
               <option>Cabaret</option>
-              <option>U-shape</option>
             </select>
-          </label>
-          <fieldset class="booking-form__fieldset">
-            <legend class="booking-form__legend">Catering</legend>
-            <label class="booking-form__checkbox">
-              <input type="checkbox" name="refreshments" value="yes" />
+          </div>
+          <fieldset class="form-field form-field--inline" aria-describedby="catering-hint">
+            <legend>Extras</legend>
+            <label class="checkbox">
+              <input type="checkbox" name="refreshments" value="yes" data-toggle-target="refreshments-notes" />
               <span>Refreshments</span>
             </label>
-            <label class="booking-form__checkbox">
-              <input type="checkbox" name="lunch" value="yes" />
+            <label class="checkbox">
+              <input type="checkbox" name="lunch" value="yes" data-toggle-target="lunch-notes" />
               <span>Lunch</span>
             </label>
+            <p id="catering-hint" class="form-hint">Tick to add catering notes below.</p>
           </fieldset>
-          <div class="booking-form__extras">
-            <label class="booking-form__field booking-form__field--inline" data-extra="refreshments" hidden>
-              <span>Refreshments details</span>
-              <textarea
-                name="refreshmentsDetails"
-                rows="2"
-                placeholder="Add timing or dietary notes for refreshments"
-              ></textarea>
-            </label>
-            <label class="booking-form__field booking-form__field--inline" data-extra="lunch" hidden>
-              <span>Lunch details</span>
-              <textarea name="lunchDetails" rows="2" placeholder="Outline lunch service or dietary requirements"></textarea>
-            </label>
+          <div class="form-field" data-conditional="refreshments-notes" hidden>
+            <label for="refreshments-notes">Refreshments notes</label>
+            <textarea id="refreshments-notes" name="refreshmentsNotes" rows="2"></textarea>
           </div>
-          <label class="booking-form__field">
-            <span>Additional notes</span>
-            <textarea name="notes" rows="3" placeholder="Optional"></textarea>
-          </label>
-          <button type="submit" class="button button--primary">Book room</button>
-          <p class="form-feedback" role="status" aria-live="polite"></p>
+          <div class="form-field" data-conditional="lunch-notes" hidden>
+            <label for="lunch-notes">Lunch notes</label>
+            <textarea id="lunch-notes" name="lunchNotes" rows="2"></textarea>
+          </div>
+          <div class="form-field">
+            <label for="notes">Additional notes</label>
+            <textarea id="notes" name="notes" rows="3" placeholder="Optional"></textarea>
+          </div>
+          <p class="form-error" data-form-error hidden></p>
+          <div class="form-actions">
+            <button type="button" class="button button--ghost" data-modal-close>Cancel</button>
+            <button type="submit" class="button button--primary">Save booking</button>
+          </div>
         </form>
       </div>
     </div>
 
-    <script src="app.js" type="module"></script>
+    <script src="app.js" defer></script>
   </body>
 </html>
