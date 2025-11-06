@@ -3,6 +3,120 @@ const calendarGrid = document.querySelector("#calendar-grid");
 const detailsContainer = document.querySelector("#booking-details-content");
 const template = document.querySelector("#booking-template");
 const feedback = document.querySelector(".form-feedback");
+const modal = document.querySelector("[data-modal]");
+const openModalButton = document.querySelector("[data-modal-open]");
+const closeModalButton = document.querySelector("[data-modal-close]");
+const modalOverlay = modal?.querySelector("[data-modal-overlay]");
+const refreshmentsToggle = form?.querySelector("input[name='refreshments']");
+const lunchToggle = form?.querySelector("input[name='lunch']");
+const refreshmentsDetails = form?.querySelector("[data-extra='refreshments']");
+const lunchDetails = form?.querySelector("[data-extra='lunch']");
+
+const FOCUSABLE_SELECTOR =
+  "a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex='-1'])";
+
+let lastFocusedElement = null;
+
+function getFocusableElements(container) {
+  if (!container) return [];
+
+  return Array.from(container.querySelectorAll(FOCUSABLE_SELECTOR)).filter((element) => {
+    if (element.hasAttribute("disabled") || element.getAttribute("aria-hidden") === "true") {
+      return false;
+    }
+
+    if (typeof window === "undefined" || typeof window.getComputedStyle !== "function") {
+      return true;
+    }
+
+    const style = window.getComputedStyle(element);
+    return style.display !== "none" && style.visibility !== "hidden";
+  });
+}
+
+function isModalOpen() {
+  return Boolean(modal && !modal.hasAttribute("hidden"));
+}
+
+function openModal() {
+  if (!modal || isModalOpen()) return;
+
+  lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  modal.hidden = false;
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("has-open-modal");
+
+  if (feedback) {
+    feedback.textContent = "";
+    feedback.style.color = "";
+  }
+
+  window.requestAnimationFrame(() => {
+    const firstField = form?.querySelector("input[name='company']");
+    firstField?.focus({ preventScroll: true });
+  });
+}
+
+function closeModal() {
+  if (!modal) return;
+
+  modal.hidden = true;
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("has-open-modal");
+
+  if (form) {
+    form.reset();
+  }
+
+  if (feedback) {
+    feedback.textContent = "";
+    feedback.style.color = "";
+  }
+
+  toggleExtraField(refreshmentsToggle, refreshmentsDetails);
+  toggleExtraField(lunchToggle, lunchDetails);
+
+  if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+    lastFocusedElement.focus();
+  }
+}
+
+openModalButton?.addEventListener("click", openModal);
+closeModalButton?.addEventListener("click", closeModal);
+modalOverlay?.addEventListener("click", closeModal);
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && isModalOpen()) {
+    event.preventDefault();
+    closeModal();
+  }
+
+  if (event.key === "Tab" && isModalOpen()) {
+    const focusableElements = getFocusableElements(modal);
+    if (!focusableElements.length) {
+      event.preventDefault();
+      return;
+    }
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+    const isShiftTab = event.shiftKey;
+    const activeElement = document.activeElement;
+
+    if (isShiftTab) {
+      if (!modal.contains(activeElement) || activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      }
+      return;
+    }
+
+    if (activeElement === lastElement) {
+      event.preventDefault();
+      firstElement.focus();
+    }
+  }
+});
 
 const ROOMS = ["Boardroom", "Conference Suite", "Studio"];
 const START_HOUR = 8;
@@ -180,11 +294,6 @@ function render() {
 function validateTimes(start, end) {
   return timeToMinutes(start) < timeToMinutes(end);
 }
-
-const refreshmentsToggle = form?.querySelector("input[name='refreshments']");
-const lunchToggle = form?.querySelector("input[name='lunch']");
-const refreshmentsDetails = form?.querySelector("[data-extra='refreshments']");
-const lunchDetails = form?.querySelector("[data-extra='lunch']");
 
 function toggleExtraField(checkbox, field) {
   if (!field) return;

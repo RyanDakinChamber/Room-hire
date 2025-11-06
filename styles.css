@@ -54,6 +54,24 @@ body {
   align-self: stretch;
 }
 
+.add-booking__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.add-booking__actions p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.add-booking__actions .button {
+  align-self: flex-start;
+}
+
 .panel.calendar {
   flex: 1 1 440px;
   display: flex;
@@ -195,6 +213,78 @@ body {
   font-size: 0.9rem;
   color: #059669;
   font-weight: 600;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(1rem, 4vw, 2.5rem);
+  z-index: 1000;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(6px);
+}
+
+.modal__dialog {
+  position: relative;
+  z-index: 1;
+  max-width: 520px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 1.75rem;
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  box-shadow: 0 30px 60px rgba(15, 23, 42, 0.25);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.modal__header {
+  margin-bottom: 1rem;
+}
+
+.modal__header h2 {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.modal__header p {
+  margin: 0.5rem 0 0;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.modal__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  border: none;
+  background: rgba(148, 163, 184, 0.25);
+  color: #111827;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.modal__close:hover {
+  background: rgba(148, 163, 184, 0.45);
+  transform: scale(1.05);
+}
+
+body.has-open-modal {
+  overflow: hidden;
 }
 
 .calendar-grid {

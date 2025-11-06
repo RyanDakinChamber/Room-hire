@@ -12,11 +12,76 @@
       <p>Book your room hire slots without losing sight of the important details.</p>
     </header>
     <main class="layout">
-      <section class="panel add-booking" aria-labelledby="add-booking-title">
+      <section class="panel add-booking" aria-labelledby="add-booking-overview">
         <div class="panel__header">
-          <h2 id="add-booking-title">Add Room Hire</h2>
+          <h2 id="add-booking-overview">Add Room Hire</h2>
           <p class="panel__subtitle">
-            Complete the form to block out a time slot. The details remain visible below.
+            Launch the booking form to block out a time slot without losing sight of the details below.
+          </p>
+        </div>
+        <div class="add-booking__actions">
+          <p>
+            Select “New booking” to open the pop-up form. Your calendar and booking log will update as soon as you
+            submit.
+          </p>
+          <button type="button" class="button" data-modal-open>New booking</button>
+        </div>
+      </section>
+      <section class="panel calendar" aria-labelledby="calendar-title">
+        <div class="panel__header">
+          <h2 id="calendar-title">Calendar</h2>
+          <p class="panel__subtitle">
+            Upcoming bookings are listed below. Details stay visible after a booking is added.
+          </p>
+        </div>
+        <div
+          id="calendar-grid"
+          class="calendar-grid"
+          role="grid"
+          aria-live="polite"
+          aria-label="Bookings overview"
+        ></div>
+        <section class="booking-details" aria-labelledby="booking-details-title">
+          <div class="booking-details__header">
+            <h3 id="booking-details-title">Booking details</h3>
+            <p>
+              Newly added bookings appear here and remain visible even after they are saved to the calendar.
+            </p>
+          </div>
+          <div id="booking-details-content" class="booking-details__content" role="log" aria-live="polite"></div>
+        </section>
+      </section>
+    </main>
+    <template id="booking-template">
+      <article class="booking">
+        <header class="booking__header">
+          <h4 class="booking__title"></h4>
+          <p class="booking__time"></p>
+        </header>
+        <ul class="booking__meta">
+          <li><span class="booking__meta-label">Room</span> <span class="booking__meta-value" data-meta="room"></span></li>
+          <li><span class="booking__meta-label">Setup</span> <span class="booking__meta-value" data-meta="setup"></span></li>
+          <li class="booking__meta-item" data-meta="refreshments" hidden>
+            <span class="booking__meta-label">Refreshments</span>
+            <span class="booking__meta-value"></span>
+          </li>
+          <li class="booking__meta-item" data-meta="lunch" hidden>
+            <span class="booking__meta-label">Lunch</span>
+            <span class="booking__meta-value"></span>
+          </li>
+        </ul>
+        <p class="booking__notes"></p>
+      </article>
+    </template>
+    <div class="modal" data-modal hidden aria-hidden="true">
+      <div class="modal__overlay" data-modal-overlay></div>
+      <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="add-booking-title">
+        <button type="button" class="modal__close" data-modal-close aria-label="Close booking form">×</button>
+        <div class="modal__header">
+          <h2 id="add-booking-title">Add Room Hire</h2>
+          <p>
+            Complete the form to block out a time slot. The details remain visible underneath the calendar after you
+            submit.
           </p>
         </div>
         <form id="booking-form" class="booking-form">
@@ -86,53 +151,8 @@
           <button type="submit" class="button">Book room</button>
           <p class="form-feedback" role="status" aria-live="polite"></p>
         </form>
-      </section>
-      <section class="panel calendar" aria-labelledby="calendar-title">
-        <div class="panel__header">
-          <h2 id="calendar-title">Calendar</h2>
-          <p class="panel__subtitle">
-            Upcoming bookings are listed below. Details stay visible after a booking is added.
-          </p>
-        </div>
-        <div
-          id="calendar-grid"
-          class="calendar-grid"
-          role="grid"
-          aria-live="polite"
-          aria-label="Bookings overview"
-        ></div>
-        <section class="booking-details" aria-labelledby="booking-details-title">
-          <div class="booking-details__header">
-            <h3 id="booking-details-title">Booking details</h3>
-            <p>
-              Newly added bookings appear here and remain visible even after they are saved to the calendar.
-            </p>
-          </div>
-          <div id="booking-details-content" class="booking-details__content" role="log" aria-live="polite"></div>
-        </section>
-      </section>
-    </main>
-    <template id="booking-template">
-      <article class="booking">
-        <header class="booking__header">
-          <h4 class="booking__title"></h4>
-          <p class="booking__time"></p>
-        </header>
-        <ul class="booking__meta">
-          <li><span class="booking__meta-label">Room</span> <span class="booking__meta-value" data-meta="room"></span></li>
-          <li><span class="booking__meta-label">Setup</span> <span class="booking__meta-value" data-meta="setup"></span></li>
-          <li class="booking__meta-item" data-meta="refreshments" hidden>
-            <span class="booking__meta-label">Refreshments</span>
-            <span class="booking__meta-value"></span>
-          </li>
-          <li class="booking__meta-item" data-meta="lunch" hidden>
-            <span class="booking__meta-label">Lunch</span>
-            <span class="booking__meta-value"></span>
-          </li>
-        </ul>
-        <p class="booking__notes"></p>
-      </article>
-    </template>
+      </div>
+    </div>
     <script src="app.js" type="module"></script>
   </body>
 </html>
