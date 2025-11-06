@@ -1,7 +1,17 @@
-# Room Hire Scheduler
+# Room Hire Booking App
 
-A lightweight static prototype that demonstrates capturing room-hire bookings while keeping the booking details visible after the reservation is added to the calendar.
+A static prototype for scheduling room hire bookings with a visual grid that keeps every reservation visible. Rooms run across
+ the top of the timeline, times run down the side from 08:00 to 20:00, and each booking block displays the time and company n
+ame.
+
+## Features
+
+- Pop-up booking form with clash detection, room setup dropdown, and catering notes that appear when selected.
+- Day selector with a “Today” shortcut so you can review and switch between schedules quickly.
+- Calendar grid that spans longer bookings across their full duration while keeping a persistent activity log underneath.
+- Responsive red-themed UI that works in both light and dark mode.
 
 ## Getting started
 
-Open `index.html` in a browser. Use the “New booking” button to launch the form, add the reservation, and see it plotted across the room-by-time calendar grid. The prototype stores entries only in browser memory—there is no shared database or backend service.
+Open `index.html` in a browser. Launch the “New booking” button to add a reservation. The prototype stores data only in your b
+rowser session—there is no shared database or backend service.

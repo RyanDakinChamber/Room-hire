@@ -3,91 +3,139 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Room Hire Scheduler</title>
+    <title>Room Hire Booking App</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header class="page-header">
-      <h1>Room Hire Scheduler</h1>
-      <p>Book your room hire slots without losing sight of the important details.</p>
+    <header class="app-header">
+      <div class="app-header__content">
+        <h1>Room Hire Booking App</h1>
+        <p>
+          Organise reservations across multiple rooms without losing visibility of the details that matter. Choose a
+          date to review the schedule, then add bookings through the pop-up form.
+        </p>
+      </div>
     </header>
-    <main class="layout">
-      <section class="panel add-booking" aria-labelledby="add-booking-overview">
+
+    <main class="app-shell">
+      <aside class="intro panel" aria-labelledby="intro-title">
         <div class="panel__header">
-          <h2 id="add-booking-overview">Add Room Hire</h2>
-          <p class="panel__subtitle">
-            Launch the booking form to block out a time slot without losing sight of the details below.
-          </p>
+          <h2 id="intro-title">Plan your day</h2>
+          <p class="panel__subtitle">Launch the booking form to capture a reservation and keep it visible.</p>
         </div>
-        <div class="add-booking__actions">
+        <div class="intro__body">
           <p>
-            Select “New booking” to open the pop-up form. Your calendar and booking log will update as soon as you
-            submit.
+            Bookings display on the grid from <strong>08:00</strong> until <strong>20:00</strong>. Select a slot to
+            view more detail in the log underneath the calendar. Use the filters to change the day or jump back to today
+            at any time.
           </p>
-          <button type="button" class="button" data-modal-open>New booking</button>
+          <button type="button" class="button button--primary" data-modal-open>New booking</button>
         </div>
-      </section>
-      <section class="panel calendar" aria-labelledby="calendar-title">
-        <div class="panel__header">
-          <h2 id="calendar-title">Calendar</h2>
-          <p class="panel__subtitle">
-            Upcoming bookings are listed below. Details stay visible after a booking is added.
-          </p>
-        </div>
-        <div
-          id="calendar-grid"
-          class="calendar-grid"
-          role="grid"
-          aria-live="polite"
-          aria-label="Bookings overview"
-        ></div>
-        <section class="booking-details" aria-labelledby="booking-details-title">
-          <div class="booking-details__header">
-            <h3 id="booking-details-title">Booking details</h3>
-            <p>
-              Newly added bookings appear here and remain visible even after they are saved to the calendar.
-            </p>
+        <section class="panel panel--sub" aria-labelledby="tips-title">
+          <div class="panel__header panel__header--compact">
+            <h3 id="tips-title">Quick tips</h3>
           </div>
-          <div id="booking-details-content" class="booking-details__content" role="log" aria-live="polite"></div>
+          <ul class="tips-list">
+            <li>Bookings are checked for clashes within the same room and day.</li>
+            <li>Select refreshments or lunch to reveal additional notes fields.</li>
+            <li>Details remain in the activity log after saving the booking.</li>
+          </ul>
+        </section>
+      </aside>
+
+      <section class="calendar panel" aria-labelledby="calendar-title">
+        <header class="calendar__header">
+          <div class="calendar__title">
+            <h2 id="calendar-title">Bookings overview</h2>
+            <p class="panel__subtitle">Rooms are listed across the top with times down the side.</p>
+          </div>
+          <div class="calendar__filters">
+            <label class="calendar__filter">
+              <span>Date</span>
+              <input type="date" data-view-date aria-label="Select date to view" />
+            </label>
+            <button type="button" class="button button--ghost" data-go-today>Today</button>
+          </div>
+        </header>
+
+        <div
+          class="calendar-grid"
+          data-calendar-grid
+          role="grid"
+          aria-describedby="calendar-title"
+          aria-live="polite"
+        ></div>
+
+        <section class="summary panel panel--sub" aria-labelledby="summary-title">
+          <div class="panel__header panel__header--compact">
+            <h3 id="summary-title">Day summary</h3>
+          </div>
+          <p class="summary__empty empty-state" data-summary-empty hidden>No bookings for this day yet.</p>
+          <dl class="summary__list" data-summary></dl>
+        </section>
+
+        <section class="booking-log" aria-labelledby="booking-log-title">
+          <div class="booking-log__header">
+            <h3 id="booking-log-title">Activity log</h3>
+            <p>Every booking appears here so you always have the context, even after refreshing the view.</p>
+          </div>
+          <div id="booking-details-content" class="booking-log__content" role="log" aria-live="polite"></div>
         </section>
       </section>
     </main>
+
     <template id="booking-template">
-      <article class="booking">
+      <article class="booking" data-booking-card>
         <header class="booking__header">
           <h4 class="booking__title"></h4>
           <p class="booking__time"></p>
         </header>
-        <ul class="booking__meta">
-          <li><span class="booking__meta-label">Room</span> <span class="booking__meta-value" data-meta="room"></span></li>
-          <li><span class="booking__meta-label">Setup</span> <span class="booking__meta-value" data-meta="setup"></span></li>
-          <li class="booking__meta-item" data-meta="refreshments" hidden>
-            <span class="booking__meta-label">Refreshments</span>
-            <span class="booking__meta-value"></span>
-          </li>
-          <li class="booking__meta-item" data-meta="lunch" hidden>
-            <span class="booking__meta-label">Lunch</span>
-            <span class="booking__meta-value"></span>
-          </li>
-        </ul>
+        <dl class="booking__meta">
+          <div class="booking__meta-row">
+            <dt>Room</dt>
+            <dd data-meta="room"></dd>
+          </div>
+          <div class="booking__meta-row" data-meta="contact" hidden>
+            <dt>Contact</dt>
+            <dd></dd>
+          </div>
+          <div class="booking__meta-row">
+            <dt>Setup</dt>
+            <dd data-meta="setup"></dd>
+          </div>
+          <div class="booking__meta-row" data-meta="refreshments" hidden>
+            <dt>Refreshments</dt>
+            <dd></dd>
+          </div>
+          <div class="booking__meta-row" data-meta="lunch" hidden>
+            <dt>Lunch</dt>
+            <dd></dd>
+          </div>
+        </dl>
         <p class="booking__notes"></p>
       </article>
     </template>
+
     <div class="modal" data-modal hidden aria-hidden="true">
       <div class="modal__overlay" data-modal-overlay></div>
       <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="add-booking-title">
         <button type="button" class="modal__close" data-modal-close aria-label="Close booking form">×</button>
         <div class="modal__header">
-          <h2 id="add-booking-title">Add Room Hire</h2>
-          <p>
-            Complete the form to block out a time slot. The details remain visible underneath the calendar after you
-            submit.
-          </p>
+          <h2 id="add-booking-title">Add room hire</h2>
+          <p>Complete the form to plot a booking on the schedule and add the details to the activity log.</p>
         </div>
         <form id="booking-form" class="booking-form">
           <label class="booking-form__field">
             <span>Company</span>
-            <input type="text" name="company" required aria-required="true" />
+            <input type="text" name="company" required aria-required="true" autocomplete="organization" />
+          </label>
+          <label class="booking-form__field">
+            <span>Contact name</span>
+            <input type="text" name="contact" autocomplete="name" placeholder="Optional" />
+          </label>
+          <label class="booking-form__field">
+            <span>Email</span>
+            <input type="email" name="email" autocomplete="email" placeholder="Optional" />
           </label>
           <label class="booking-form__field">
             <span>Room</span>
@@ -96,6 +144,7 @@
               <option>Boardroom</option>
               <option>Conference Suite</option>
               <option>Studio</option>
+              <option>Training Room</option>
             </select>
           </label>
           <label class="booking-form__field">
@@ -105,17 +154,13 @@
           <div class="booking-form__row">
             <label class="booking-form__field">
               <span>Start time</span>
-              <input type="time" name="start" required aria-required="true" />
+              <input type="time" name="start" required aria-required="true" min="08:00" max="20:00" />
             </label>
             <label class="booking-form__field">
               <span>End time</span>
-              <input type="time" name="end" required aria-required="true" />
+              <input type="time" name="end" required aria-required="true" min="08:30" max="20:00" />
             </label>
           </div>
-          <label class="booking-form__field">
-            <span>Notes</span>
-            <textarea name="notes" rows="3" placeholder="Optional"></textarea>
-          </label>
           <label class="booking-form__field">
             <span>Room setup style</span>
             <select name="setup" required aria-required="true">
@@ -123,12 +168,12 @@
               <option>Theatre</option>
               <option>Classroom</option>
               <option>Boardroom</option>
-              <option>U-shape</option>
               <option>Cabaret</option>
+              <option>U-shape</option>
             </select>
           </label>
           <fieldset class="booking-form__fieldset">
-            <legend class="booking-form__legend">Catering options</legend>
+            <legend class="booking-form__legend">Catering</legend>
             <label class="booking-form__checkbox">
               <input type="checkbox" name="refreshments" value="yes" />
               <span>Refreshments</span>
@@ -141,18 +186,27 @@
           <div class="booking-form__extras">
             <label class="booking-form__field booking-form__field--inline" data-extra="refreshments" hidden>
               <span>Refreshments details</span>
-              <textarea name="refreshmentsDetails" rows="2" placeholder="Describe timings, quantities, or special requests"></textarea>
+              <textarea
+                name="refreshmentsDetails"
+                rows="2"
+                placeholder="Add timing or dietary notes for refreshments"
+              ></textarea>
             </label>
             <label class="booking-form__field booking-form__field--inline" data-extra="lunch" hidden>
               <span>Lunch details</span>
-              <textarea name="lunchDetails" rows="2" placeholder="Add dietary needs or service notes"></textarea>
+              <textarea name="lunchDetails" rows="2" placeholder="Outline lunch service or dietary requirements"></textarea>
             </label>
           </div>
-          <button type="submit" class="button">Book room</button>
+          <label class="booking-form__field">
+            <span>Additional notes</span>
+            <textarea name="notes" rows="3" placeholder="Optional"></textarea>
+          </label>
+          <button type="submit" class="button button--primary">Book room</button>
           <p class="form-feedback" role="status" aria-live="polite"></p>
         </form>
       </div>
     </div>
+
     <script src="app.js" type="module"></script>
   </body>
 </html>
