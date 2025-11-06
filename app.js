@@ -30,7 +30,7 @@ function createCalendarItem(booking) {
   item.className = "calendar-list__item";
 
   const title = document.createElement("h3");
-  title.textContent = booking.name;
+  title.textContent = booking.company;
 
   const time = document.createElement("time");
   time.dateTime = `${booking.date} ${booking.start}`;
@@ -46,7 +46,7 @@ function createDetailCard(booking) {
   const timeEl = card.querySelector(".booking__time");
   const notesEl = card.querySelector(".booking__notes");
 
-  titleEl.textContent = booking.name;
+  titleEl.textContent = booking.company;
   timeEl.textContent = formatTimeRange(booking.date, booking.start, booking.end);
   notesEl.textContent = booking.notes || "No additional notes";
 
@@ -71,7 +71,7 @@ form?.addEventListener("submit", (event) => {
   const formData = new FormData(form);
 
   const booking = {
-    name: formData.get("name").trim(),
+    company: (formData.get("company") ?? "").toString().trim(),
     date: formData.get("date"),
     start: formData.get("start"),
     end: formData.get("end"),
@@ -87,12 +87,12 @@ form?.addEventListener("submit", (event) => {
   bookings.push(booking);
   render();
 
-  feedback.textContent = `Booked ${booking.name} on ${booking.date}`;
+  feedback.textContent = `Booked ${booking.company} on ${booking.date}`;
   feedback.style.color = "#059669";
 
   form.reset();
-  const nameField = form.querySelector("input[name='name']");
-  nameField?.focus();
+  const companyField = form.querySelector("input[name='company']");
+  companyField?.focus();
 });
 
 render();
