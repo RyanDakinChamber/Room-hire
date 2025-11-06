@@ -181,7 +181,8 @@ h1 {
   justify-content: center;
 }
 
-.calendar__cell--time {
+.calendar__cell--time,
+.calendar__cell--time-minor {
   font-weight: 600;
   justify-content: flex-end;
   padding-right: 16px;
@@ -189,9 +190,7 @@ h1 {
 }
 
 .calendar__cell--time-minor {
-  font-weight: 500;
   font-size: 0.85rem;
-  color: var(--color-text);
 }
 
 .calendar__cell--slot {
@@ -202,9 +201,12 @@ h1 {
   position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 4px;
   padding: 10px 12px;
   margin: 4px;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
   border-radius: var(--radius-sm);
   background: var(--color-accent);
   color: #fff;
@@ -427,6 +429,46 @@ textarea:focus {
   gap: 8px;
 }
 
+.form-field--rooms {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.form-field--rooms legend {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.checkbox-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-accent);
+}
+
+.checkbox:hover,
+.checkbox:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(230, 35, 74, 0.15);
+}
+
 .form-row {
   display: grid;
   gap: 16px;
@@ -495,37 +537,3 @@ body.is-modal-open {
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: #11151c;
-    --color-surface: #171c24;
-    --color-border: #262c36;
-    --color-border-strong: #313846;
-    --color-text: #f7f9fc;
-    --color-muted: #96a0b5;
-    --color-shadow: rgba(0, 0, 0, 0.5);
-  }
-
-  .calendar__cell--time {
-    background: #1d232d;
-  }
-
-  .calendar__cell--header {
-    background: rgba(230, 35, 74, 0.18);
-  }
-
-  .calendar__grid,
-  .calendar__cell,
-  .activity-card,
-  .activity-card__notes {
-    background: var(--color-surface);
-  }
-
-  .empty-state {
-    background: #1d232d;
-  }
-
-  .modal__dialog {
-    background: var(--color-surface);
-  }
-}

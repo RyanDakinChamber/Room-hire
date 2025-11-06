@@ -121,6 +121,11 @@ function buildBookingFromForm(formData) {
     return null;
   }
 
+  if (startMinutes % SLOT_INTERVAL !== 0 || endMinutes % SLOT_INTERVAL !== 0) {
+    displayFormError("Please use 30-minute increments for start and end times.");
+    return null;
+  }
+
   if (startMinutes < START_TIME || endMinutes > END_TIME) {
     displayFormError("Bookings must fall between 08:00 and 20:00.");
     return null;

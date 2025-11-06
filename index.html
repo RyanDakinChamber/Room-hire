@@ -97,19 +97,39 @@
             <label for="email">Email</label>
             <input id="email" name="email" type="email" autocomplete="email" placeholder="Optional" />
           </div>
-          <div class="form-field">
-            <label for="rooms">Rooms</label>
-            <select id="rooms" name="rooms" multiple required size="6">
-              <option value="Room 1">Room 1</option>
-              <option value="Room 2">Room 2</option>
-              <option value="Room 3">Room 3</option>
-              <option value="Room 4">Room 4</option>
-              <option value="Boardroom">Boardroom</option>
-              <option value="Chamber Pod">Chamber Pod</option>
-              <option value="Members Lounge Room">Members Lounge Room</option>
-            </select>
-            <p class="form-hint">Use Ctrl (Windows) or Command (Mac) to pick more than one room.</p>
-          </div>
+          <fieldset class="form-field form-field--rooms">
+            <legend>Rooms</legend>
+            <div class="checkbox-list">
+              <label class="checkbox">
+                <input type="checkbox" name="rooms" value="Room 1" />
+                <span>Room 1</span>
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" name="rooms" value="Room 2" />
+                <span>Room 2</span>
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" name="rooms" value="Room 3" />
+                <span>Room 3</span>
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" name="rooms" value="Room 4" />
+                <span>Room 4</span>
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" name="rooms" value="Boardroom" />
+                <span>Boardroom</span>
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" name="rooms" value="Chamber Pod" />
+                <span>Chamber Pod</span>
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" name="rooms" value="Members Lounge Room" />
+                <span>Members Lounge Room</span>
+              </label>
+            </div>
+          </fieldset>
           <div class="form-field">
             <label for="date">Date</label>
             <input id="date" name="date" type="date" required />
