@@ -25,6 +25,15 @@
             <input type="text" name="company" required aria-required="true" />
           </label>
           <label class="booking-form__field">
+            <span>Room</span>
+            <select name="room" required aria-required="true">
+              <option value="" disabled selected>Select a room</option>
+              <option>Boardroom</option>
+              <option>Conference Suite</option>
+              <option>Studio</option>
+            </select>
+          </label>
+          <label class="booking-form__field">
             <span>Date</span>
             <input type="date" name="date" required aria-required="true" />
           </label>
@@ -42,6 +51,38 @@
             <span>Notes</span>
             <textarea name="notes" rows="3" placeholder="Optional"></textarea>
           </label>
+          <label class="booking-form__field">
+            <span>Room setup style</span>
+            <select name="setup" required aria-required="true">
+              <option value="" disabled selected>Select a layout</option>
+              <option>Theatre</option>
+              <option>Classroom</option>
+              <option>Boardroom</option>
+              <option>U-shape</option>
+              <option>Cabaret</option>
+            </select>
+          </label>
+          <fieldset class="booking-form__fieldset">
+            <legend class="booking-form__legend">Catering options</legend>
+            <label class="booking-form__checkbox">
+              <input type="checkbox" name="refreshments" value="yes" />
+              <span>Refreshments</span>
+            </label>
+            <label class="booking-form__checkbox">
+              <input type="checkbox" name="lunch" value="yes" />
+              <span>Lunch</span>
+            </label>
+          </fieldset>
+          <div class="booking-form__extras">
+            <label class="booking-form__field booking-form__field--inline" data-extra="refreshments" hidden>
+              <span>Refreshments details</span>
+              <textarea name="refreshmentsDetails" rows="2" placeholder="Describe timings, quantities, or special requests"></textarea>
+            </label>
+            <label class="booking-form__field booking-form__field--inline" data-extra="lunch" hidden>
+              <span>Lunch details</span>
+              <textarea name="lunchDetails" rows="2" placeholder="Add dietary needs or service notes"></textarea>
+            </label>
+          </div>
           <button type="submit" class="button">Book room</button>
           <p class="form-feedback" role="status" aria-live="polite"></p>
         </form>
@@ -53,7 +94,13 @@
             Upcoming bookings are listed below. Details stay visible after a booking is added.
           </p>
         </div>
-        <ul id="calendar-list" class="calendar-list" aria-live="polite" aria-label="Bookings"></ul>
+        <div
+          id="calendar-grid"
+          class="calendar-grid"
+          role="grid"
+          aria-live="polite"
+          aria-label="Bookings overview"
+        ></div>
         <section class="booking-details" aria-labelledby="booking-details-title">
           <div class="booking-details__header">
             <h3 id="booking-details-title">Booking details</h3>
@@ -71,6 +118,18 @@
           <h4 class="booking__title"></h4>
           <p class="booking__time"></p>
         </header>
+        <ul class="booking__meta">
+          <li><span class="booking__meta-label">Room</span> <span class="booking__meta-value" data-meta="room"></span></li>
+          <li><span class="booking__meta-label">Setup</span> <span class="booking__meta-value" data-meta="setup"></span></li>
+          <li class="booking__meta-item" data-meta="refreshments" hidden>
+            <span class="booking__meta-label">Refreshments</span>
+            <span class="booking__meta-value"></span>
+          </li>
+          <li class="booking__meta-item" data-meta="lunch" hidden>
+            <span class="booking__meta-label">Lunch</span>
+            <span class="booking__meta-value"></span>
+          </li>
+        </ul>
         <p class="booking__notes"></p>
       </article>
     </template>
