@@ -1,0 +1,11 @@
+{
+  "name": "room-hire",
+  "version": "1.0.0",
+  "description": "Prototype for Staffordshire Chambers room hire bookings",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "MIT"
+}

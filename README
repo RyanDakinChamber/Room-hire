@@ -1,1 +1,18 @@
-Read Me
+# Room Hire Booking App
+
+A front-end prototype for managing daily room hire reservations at Staffordshire Chambers. The interface keeps the familiar red
+ branding, lists rooms across the top of the schedule, and runs times vertically from 08:00 until 20:00 so availability is easy to
+ scan at a glance.
+
+## Features
+
+- Branded header with instant access to the booking form and date controls.
+- Timeline calendar that renders bookings with their time range and company name across each room column.
+- Pop-up booking form with clash detection, optional room setup styles, and conditional catering notes for refreshments and lunch.
+- Booking activity list that summarises the key details for the selected day.
+
+## Getting started
+
+Open `index.html` in your browser or serve the directory with any static file server. To use the bundled Node server, run `npm start`
+ and then visit `http://localhost:3000`. Use the **New booking** buttons to launch the pop-up form, choose your room, and save the
+ reservation. The prototype runs entirely in the browser—data is not persisted to a shared database.
