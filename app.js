@@ -23,9 +23,6 @@ const closeModalButtons = document.querySelectorAll("[data-modal-close]");
 const bookingForm = document.getElementById("booking-form");
 const formErrorEl = bookingForm.querySelector("[data-form-error]");
 
-const conditionalSections = bookingForm.querySelectorAll("[data-conditional]");
-const toggleInputs = bookingForm.querySelectorAll("[data-toggle-target]");
-
 let bookings = [];
 let viewDate = formatDateInput(new Date());
 let slots = generateSlots();
@@ -59,15 +56,11 @@ function bindEvents() {
   });
 
   bookingForm.addEventListener("submit", handleFormSubmit);
-  toggleInputs.forEach((input) => input.addEventListener("change", handleToggleChange));
 }
 
-function handleToggleChange(event) {
-  const target = event.target.getAttribute("data-toggle-target");
-  if (!target) return;
-  const section = bookingForm.querySelector(`[data-conditional="${target}"]`);
-  if (!section) return;
-  section.hidden = !event.target.checked;
+function normaliseSelectedRooms(selectedRooms) {
+  const unique = new Set(selectedRooms);
+  return rooms.filter((room) => unique.has(room));
 }
 
 function handleDateChange(event) {
@@ -82,19 +75,27 @@ function handleFormSubmit(event) {
   const booking = buildBookingFromForm(formData);
   if (!booking) return;
 
-  const clash = bookings.some((item) =>
-    item.date === booking.date &&
-    item.room === booking.room &&
-    !(booking.endMinutes <= item.startMinutes || booking.startMinutes >= item.endMinutes)
-  );
+  const clash = bookings.some((item) => {
+    if (item.date !== booking.date) return false;
+    const roomOverlap = item.rooms.some((room) => booking.rooms.includes(room));
+    if (!roomOverlap) return false;
+    return !(booking.endMinutes <= item.startMinutes || booking.startMinutes >= item.endMinutes);
+  });
 
   if (clash) {
-    displayFormError("This room is already booked during that time.");
+    displayFormError("One of the selected rooms is already booked during that time.");
     return;
   }
 
   bookings.push(booking);
-  bookings.sort((a, b) => a.startMinutes - b.startMinutes);
+  bookings.sort((a, b) => {
+    if (a.startMinutes !== b.startMinutes) {
+      return a.startMinutes - b.startMinutes;
+    }
+    const aRoomIndex = rooms.indexOf(a.rooms[0]);
+    const bRoomIndex = rooms.indexOf(b.rooms[0]);
+    return aRoomIndex - bRoomIndex;
+  });
   clearForm();
   closeModal();
   render();
@@ -102,12 +103,12 @@ function handleFormSubmit(event) {
 
 function buildBookingFromForm(formData) {
   const company = formData.get("company").trim();
-  const room = formData.get("room");
+  const selectedRooms = normaliseSelectedRooms(formData.getAll("rooms"));
   const date = formData.get("date");
   const start = formData.get("start");
   const end = formData.get("end");
 
-  if (!company || !room || !date || !start || !end) {
+  if (!company || !selectedRooms.length || !date || !start || !end) {
     displayFormError("Please complete the required fields.");
     return null;
   }
@@ -132,15 +133,13 @@ function buildBookingFromForm(formData) {
     company,
     contact: formData.get("contact").trim(),
     email: formData.get("email").trim(),
-    room,
+    rooms: selectedRooms,
     date,
     start,
     end,
     startMinutes,
     endMinutes,
     setup: formData.get("setup") || "",
-    refreshments: formData.get("refreshments") === "yes",
-    lunch: formData.get("lunch") === "yes",
     refreshmentsNotes: formData.get("refreshmentsNotes").trim(),
     lunchNotes: formData.get("lunchNotes").trim(),
     notes: formData.get("notes").trim()
@@ -196,29 +195,31 @@ function renderCalendar() {
     .sort((a, b) => a.startMinutes - b.startMinutes);
 
   dayBookings.forEach((booking) => {
-    const bookingEl = document.createElement("div");
-    bookingEl.className = "calendar-booking";
+    booking.rooms.forEach((room) => {
+      const bookingEl = document.createElement("div");
+      bookingEl.className = "calendar-booking";
 
-    const roomIndex = rooms.indexOf(booking.room);
-    if (roomIndex === -1) return;
-    const startRow = 2 + Math.floor((booking.startMinutes - START_TIME) / SLOT_INTERVAL);
-    const endRow = 2 + Math.ceil((booking.endMinutes - START_TIME) / SLOT_INTERVAL);
-    const columnStart = 2 + roomIndex;
+      const roomIndex = rooms.indexOf(room);
+      if (roomIndex === -1) return;
+      const startRow = 2 + Math.floor((booking.startMinutes - START_TIME) / SLOT_INTERVAL);
+      const endRow = 2 + Math.ceil((booking.endMinutes - START_TIME) / SLOT_INTERVAL);
+      const columnStart = 2 + roomIndex;
 
-    bookingEl.style.gridRow = `${startRow} / ${endRow}`;
-    bookingEl.style.gridColumn = `${columnStart} / ${columnStart + 1}`;
+      bookingEl.style.gridRow = `${startRow} / ${endRow}`;
+      bookingEl.style.gridColumn = `${columnStart} / ${columnStart + 1}`;
 
-    bookingEl.innerHTML = `
-      <span class="calendar-booking__time">${formatRange(booking.start, booking.end)}</span>
-      <span class="calendar-booking__company">${booking.company}</span>
-    `;
+      bookingEl.innerHTML = `
+        <span class="calendar-booking__time">${formatRange(booking.start, booking.end)}</span>
+        <span class="calendar-booking__company">${booking.company}</span>
+      `;
 
-    bookingEl.setAttribute(
-      "aria-label",
-      `${booking.company} in ${booking.room} from ${formatRange(booking.start, booking.end)}`
-    );
+      bookingEl.setAttribute(
+        "aria-label",
+        `${booking.company} in ${room} from ${formatRange(booking.start, booking.end)}`
+      );
 
-    calendarEl.appendChild(bookingEl);
+      calendarEl.appendChild(bookingEl);
+    });
   });
 }
 
@@ -241,7 +242,9 @@ function renderActivity() {
   dayBookings.forEach((booking) => {
     const card = template.content.firstElementChild.cloneNode(true);
     card.querySelector(".activity-card__title").textContent = booking.company;
-    card.querySelector(".activity-card__time").textContent = `${formatRange(booking.start, booking.end)} · ${booking.room}`;
+    card.querySelector(".activity-card__time").textContent = `${formatRange(booking.start, booking.end)} · ${
+      booking.rooms.join(", ")
+    }`;
 
     const metaList = card.querySelector(".activity-card__meta");
     metaList.innerHTML = "";
@@ -252,11 +255,11 @@ function renderActivity() {
     if (booking.email) {
       appendMeta(metaList, "Email", booking.email);
     }
-    if (booking.refreshments) {
-      appendMeta(metaList, "Refreshments", booking.refreshmentsNotes || "Yes");
+    if (booking.refreshmentsNotes) {
+      appendMeta(metaList, "Refreshments", booking.refreshmentsNotes);
     }
-    if (booking.lunch) {
-      appendMeta(metaList, "Lunch", booking.lunchNotes || "Yes");
+    if (booking.lunchNotes) {
+      appendMeta(metaList, "Lunch", booking.lunchNotes);
     }
 
     const notesEl = card.querySelector(".activity-card__notes");
@@ -286,8 +289,10 @@ function openModal() {
   document.body.classList.add("is-modal-open");
   bookingForm.reset();
   formErrorEl.hidden = true;
-  conditionalSections.forEach((section) => (section.hidden = true));
-  bookingForm.querySelector("#date").value = viewDate;
+  const dateField = bookingForm.querySelector("#date");
+  if (dateField) {
+    dateField.value = viewDate;
+  }
   const focusTarget = bookingForm.querySelector("input, select, textarea, button");
   if (focusTarget) focusTarget.focus();
   trapFocus();
@@ -342,7 +347,6 @@ function releaseFocusTrap() {
 
 function clearForm() {
   bookingForm.reset();
-  conditionalSections.forEach((section) => (section.hidden = true));
   formErrorEl.hidden = true;
 }
 
@@ -353,7 +357,10 @@ function displayFormError(message) {
 
 function setDateInput(value) {
   dateInput.value = value;
-  bookingForm.querySelector("#date").value = value;
+  const dateField = bookingForm.querySelector("#date");
+  if (dateField) {
+    dateField.value = value;
+  }
 }
 
 function formatDateInput(date) {

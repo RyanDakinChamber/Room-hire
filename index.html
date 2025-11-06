@@ -98,17 +98,17 @@
             <input id="email" name="email" type="email" autocomplete="email" placeholder="Optional" />
           </div>
           <div class="form-field">
-            <label for="room">Room</label>
-            <select id="room" name="room" required>
-              <option value="" disabled selected>Select a room</option>
-              <option>Room 1</option>
-              <option>Room 2</option>
-              <option>Room 3</option>
-              <option>Room 4</option>
-              <option>Boardroom</option>
-              <option>Chamber Pod</option>
-              <option>Members Lounge Room</option>
+            <label for="rooms">Rooms</label>
+            <select id="rooms" name="rooms" multiple required size="6">
+              <option value="Room 1">Room 1</option>
+              <option value="Room 2">Room 2</option>
+              <option value="Room 3">Room 3</option>
+              <option value="Room 4">Room 4</option>
+              <option value="Boardroom">Boardroom</option>
+              <option value="Chamber Pod">Chamber Pod</option>
+              <option value="Members Lounge Room">Members Lounge Room</option>
             </select>
+            <p class="form-hint">Use Ctrl (Windows) or Command (Mac) to pick more than one room.</p>
           </div>
           <div class="form-field">
             <label for="date">Date</label>
@@ -117,11 +117,27 @@
           <div class="form-row">
             <div class="form-field">
               <label for="start">Start time</label>
-              <input id="start" name="start" type="time" min="08:00" max="20:00" required />
+              <input
+                id="start"
+                name="start"
+                type="time"
+                min="08:00"
+                max="20:00"
+                step="1800"
+                required
+              />
             </div>
             <div class="form-field">
               <label for="end">End time</label>
-              <input id="end" name="end" type="time" min="08:30" max="20:00" required />
+              <input
+                id="end"
+                name="end"
+                type="time"
+                min="08:30"
+                max="20:00"
+                step="1800"
+                required
+              />
             </div>
           </div>
           <div class="form-field">
@@ -134,25 +150,13 @@
               <option>Cabaret</option>
             </select>
           </div>
-          <fieldset class="form-field form-field--inline" aria-describedby="catering-hint">
-            <legend>Extras</legend>
-            <label class="checkbox">
-              <input type="checkbox" name="refreshments" value="yes" data-toggle-target="refreshments-notes" />
-              <span>Refreshments</span>
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" name="lunch" value="yes" data-toggle-target="lunch-notes" />
-              <span>Lunch</span>
-            </label>
-            <p id="catering-hint" class="form-hint">Tick to add catering notes below.</p>
-          </fieldset>
-          <div class="form-field" data-conditional="refreshments-notes" hidden>
+          <div class="form-field">
             <label for="refreshments-notes">Refreshments notes</label>
-            <textarea id="refreshments-notes" name="refreshmentsNotes" rows="2"></textarea>
+            <textarea id="refreshments-notes" name="refreshmentsNotes" rows="2" placeholder="Optional"></textarea>
           </div>
-          <div class="form-field" data-conditional="lunch-notes" hidden>
+          <div class="form-field">
             <label for="lunch-notes">Lunch notes</label>
-            <textarea id="lunch-notes" name="lunchNotes" rows="2"></textarea>
+            <textarea id="lunch-notes" name="lunchNotes" rows="2" placeholder="Optional"></textarea>
           </div>
           <div class="form-field">
             <label for="notes">Additional notes</label>
