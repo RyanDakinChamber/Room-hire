@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 
 const emptyState = {
+  id: undefined,
   contactName: "",
   attendeeCount: 1,
   layout: "boardroom",
@@ -37,6 +38,14 @@ export default function BookingForm({ rooms, initialData, onSubmit, onCancel }) 
       ...prev,
       [name]: type === "checkbox" ? checked : value
     }));
+
+    if (name === "refreshments" && !checked) {
+      setFormState((prev) => ({ ...prev, refreshmentsDetails: "" }));
+    }
+
+    if (name === "lunch" && !checked) {
+      setFormState((prev) => ({ ...prev, lunchDetails: "" }));
+    }
   };
 
   const handleEquipmentChange = (value) => {
@@ -63,11 +72,14 @@ export default function BookingForm({ rooms, initialData, onSubmit, onCancel }) 
     });
   };
 
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault();
-    onSubmit(formState).catch((error) => {
+    try {
+      await onSubmit(formState);
+      setErrors([]);
+    } catch (error) {
       setErrors(error.details ?? [error.message]);
-    });
+    }
   };
 
   return (
@@ -221,7 +233,7 @@ export default function BookingForm({ rooms, initialData, onSubmit, onCancel }) 
           Cancel
         </button>
         <button type="submit" style={{ padding: "0.6rem 1rem", background: "#2f80ed", color: "white" }}>
-          {initialData?.id ? "Update Booking" : "Create Booking"}
+          {formState.id ? "Update Booking" : "Create Booking"}
         </button>
       </div>
     </form>
