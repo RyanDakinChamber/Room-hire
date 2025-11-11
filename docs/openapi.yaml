@@ -1,0 +1,233 @@
+openapi: 3.0.3
+info:
+  title: Staffordshire Chambers Room Hire API
+  version: 1.0.0
+servers:
+  - url: http://localhost:4000/api
+paths:
+  /rooms:
+    get:
+      summary: List rooms
+      tags: [Rooms]
+      responses:
+        "200":
+          description: List of rooms
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rooms:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Room"
+  /bookings:
+    get:
+      summary: List bookings for a date
+      tags: [Bookings]
+      parameters:
+        - in: query
+          name: date
+          schema:
+            type: string
+            format: date
+          required: true
+      responses:
+        "200":
+          description: Bookings for the requested date
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bookings:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Booking"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+    post:
+      summary: Create a booking
+      tags: [Bookings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookingInput"
+      responses:
+        "201":
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /bookings/{id}:
+    put:
+      summary: Update a booking
+      tags: [Bookings]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBookingInput"
+      responses:
+        "200":
+          description: Booking updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+    delete:
+      summary: Delete a booking
+      tags: [Bookings]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Booking deleted
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  schemas:
+    Room:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        capacity:
+          type: integer
+        default_layout:
+          type: string
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+        contact_name:
+          type: string
+        attendee_count:
+          type: integer
+        layout:
+          type: string
+        refreshments:
+          type: boolean
+        refreshments_details:
+          type: string
+          nullable: true
+        lunch:
+          type: boolean
+        lunch_details:
+          type: string
+          nullable: true
+        equipment:
+          type: array
+          items:
+            type: string
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        rooms:
+          type: array
+          items:
+            $ref: "#/components/schemas/Room"
+    CreateBookingInput:
+      type: object
+      required:
+        - contactName
+        - attendeeCount
+        - layout
+        - startTime
+        - endTime
+        - rooms
+      properties:
+        contactName:
+          type: string
+        attendeeCount:
+          type: integer
+          minimum: 1
+        layout:
+          type: string
+          enum: [boardroom, u-shape, theatre]
+        refreshments:
+          type: boolean
+        refreshmentsDetails:
+          type: string
+        lunch:
+          type: boolean
+        lunchDetails:
+          type: string
+        equipment:
+          type: array
+          items:
+            type: string
+            enum: [laptop, projector, flipchart]
+        rooms:
+          type: array
+          items:
+            type: integer
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+    UpdateBookingInput:
+      allOf:
+        - $ref: "#/components/schemas/CreateBookingInput"
+  responses:
+    BadRequest:
+      description: Invalid request payload
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Conflict:
+      description: Booking conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: array
+          items:
+            type: string
