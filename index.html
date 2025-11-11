@@ -186,6 +186,7 @@
       overflow: hidden;
       box-shadow: 0 20px 45px rgba(27, 31, 59, 0.12);
       table-layout: fixed;
+      min-width: 880px;
     }
 
     th,
@@ -289,6 +290,22 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .calendar-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.75rem;
+    }
+
+    .calendar-scroll::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .calendar-scroll::-webkit-scrollbar-thumb {
+      background: rgba(27, 31, 59, 0.25);
+      border-radius: 999px;
     }
 
     form label {
@@ -395,18 +412,58 @@
       letter-spacing: 0.01em;
     }
 
-    @media (max-width: 768px) {
-      table {
-        font-size: 0.9rem;
+    @media (max-width: 1024px) {
+      .calendar-scroll table {
+        min-width: 760px;
       }
+    }
 
-      .booking-cell {
-        min-width: 120px;
+    @media (max-width: 768px) {
+      main {
+        padding: 1.75rem 1rem 2.5rem;
       }
 
       #app-header {
         flex-direction: column;
         align-items: flex-start;
+      }
+
+      #date-navigator {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      #date-navigator strong {
+        min-width: auto;
+        text-align: center;
+      }
+
+      table {
+        font-size: 0.85rem;
+      }
+
+      thead th:first-child,
+      tbody td.time-cell {
+        width: 70px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      main {
+        padding: 1.5rem 0.75rem 2rem;
+      }
+
+      .calendar-scroll {
+        margin: 0 -0.75rem;
+        padding: 0 0.75rem 0.75rem;
+      }
+
+      .calendar-scroll table {
+        min-width: 640px;
+      }
+
+      #booking-list li {
+        padding: 0.9rem;
       }
     }
   </style>
@@ -429,7 +486,7 @@
       <button data-action="today" class="btn-primary" style="margin-left:auto;">Today</button>
     </section>
 
-    <section id="calendar" class="surface" style="overflow-x:auto;"></section>
+    <section id="calendar" class="surface"></section>
 
     <section id="booking-list" class="surface"></section>
   </main>
@@ -760,8 +817,11 @@
 
       table.appendChild(thead);
       table.appendChild(tbody);
+      const scrollContainer = document.createElement("div");
+      scrollContainer.className = "calendar-scroll";
+      scrollContainer.appendChild(table);
       calendar.innerHTML = "";
-      calendar.appendChild(table);
+      calendar.appendChild(scrollContainer);
     }
 
     function renderBookingList() {
