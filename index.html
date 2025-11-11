@@ -20,6 +20,7 @@
       margin: 0;
       min-height: 100vh;
       background: linear-gradient(180deg, #ffffff 0%, #f5f6f8 55%, #e3e7ef 100%);
+      overflow-x: hidden;
     }
 
     main {
@@ -180,13 +181,13 @@
 
     table {
       border-collapse: collapse;
-      width: 100%;
+      width: max-content;
+      min-width: 100%;
       background: #fff;
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 20px 45px rgba(27, 31, 59, 0.12);
       table-layout: fixed;
-      min-width: 880px;
     }
 
     th,
@@ -292,11 +293,16 @@
       text-overflow: ellipsis;
     }
 
+    #calendar {
+      overflow: hidden;
+    }
+
     .calendar-scroll {
       width: 100%;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       padding-bottom: 0.75rem;
+      margin: 0;
     }
 
     .calendar-scroll::-webkit-scrollbar {
@@ -453,13 +459,8 @@
         padding: 1.5rem 0.75rem 2rem;
       }
 
-      .calendar-scroll {
-        margin: 0 -0.75rem;
-        padding: 0 0.75rem 0.75rem;
-      }
-
       .calendar-scroll table {
-        min-width: 640px;
+        min-width: 560px;
       }
 
       #booking-list li {
