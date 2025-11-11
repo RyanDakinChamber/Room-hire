@@ -1,26 +1,20 @@
-# Staffordshire Chambers Room Hire (Prototype)
+# Staffordshire Chambers Room Hire (Static Demo)
 
-A lightweight Next.js prototype that showcases the Staffordshire Chambers room-hire experience without any backend or database dependencies. All bookings live in memory so you can demonstrate the scheduling flow instantly—data resets whenever the dev server reloads.
+This repository now ships as a single self-contained HTML file that recreates the room-hire booking experience entirely in the browser. There are no build steps, databases, or dependencies—upload `index.html` to any static web host (or double-click it on your desktop) and you can demonstrate the full booking workflow immediately.
 
-## Getting Started
+## Features
 
-1. Install dependencies:
-   ```bash
-   cd frontend
-   npm install
-   ```
-2. Launch the development server:
-   ```bash
-   npm run dev
-   ```
-3. Open `http://localhost:3000` in your browser to explore the interactive booking calendar.
+- Seven Staffordshire Chambers rooms with capacity and default layout details.
+- Day-by-day calendar view showing bookings across all rooms in 30-minute slots.
+- Create, edit, and delete bookings with layout, refreshments, lunch, and equipment options.
+- Real-time conflict detection preventing overlapping bookings in the same room.
+- All data is held in memory for demo purposes and resets on page refresh.
 
-## Features in this Prototype
+## Using the Demo
 
-- Preloaded sample bookings for today so the calendar feels alive immediately.
-- Create, edit, and delete bookings across all Staffordshire Chambers rooms.
-- Enforces 30-minute slot increments, room conflict detection, and same-day bookings.
-- Capture layout preferences, refreshments, lunch requirements, and equipment needs.
-- Fully client-side logic, making it easy to share or demo without extra services.
+1. Open `index.html` in a modern browser (Chrome, Edge, Firefox, Safari).
+2. Use the navigation controls to change day or jump to a specific date.
+3. Click **New Booking** (or tap an existing booking) to open the editor form.
+4. Fill in the required information and save—new entries appear instantly in the calendar and list.
 
-When you're ready to introduce persistence, this UI can be connected to an API layer or database-backed service.
+To share or host the prototype, simply copy `index.html` to your web server or hosting provider. No additional configuration is required.

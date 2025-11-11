@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Staffordshire Chambers Room Hire</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Inter", "Segoe UI", sans-serif;
+      color: #1f2933;
+      background-color: #f7fafc;
+      line-height: 1.5;
+    }
+
+    body {
+      margin: 0;
+      background: #f1f5f9;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    h1 {
+      margin: 0;
+      color: #102a43;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      font: inherit;
+    }
+
+    .btn-primary {
+      background: #2f80ed;
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #1f2933;
+      padding: 0.6rem 1rem;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: #fff;
+      padding: 0.6rem 1rem;
+    }
+
+    .surface {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.12);
+      padding: 1.25rem;
+    }
+
+    #app-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    #date-navigator {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    #date-navigator strong {
+      font-size: 1.05rem;
+      min-width: 230px;
+    }
+
+    #date-navigator button {
+      padding: 0.6rem 1rem;
+      background: #e1e7f0;
+    }
+
+    #date-navigator input[type="date"] {
+      font: inherit;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #cbd5f5;
+      background: #fff;
+    }
+
+    #room-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .room-card {
+      min-width: 170px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 0.85rem;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid #e2e8f0;
+      padding: 0.5rem;
+      text-align: left;
+    }
+
+    thead th {
+      background: #f1f5f9;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tbody td.time-cell {
+      position: sticky;
+      left: 0;
+      background: #f8fafc;
+      font-weight: 600;
+      width: 90px;
+    }
+
+    .booking-cell {
+      min-width: 180px;
+      background: transparent;
+      cursor: default;
+    }
+
+    .booking-cell.active {
+      background: #dbeafe;
+      cursor: pointer;
+    }
+
+    .booking-chip {
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    form label {
+      display: grid;
+      gap: 0.35rem;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="datetime-local"],
+    textarea,
+    select {
+      font: inherit;
+      padding: 0.55rem 0.6rem;
+      border-radius: 6px;
+      border: 1px solid #cbd5f5;
+      background: #fff;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    fieldset {
+      border: 1px solid #d0d5e6;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    fieldset legend {
+      font-weight: 700;
+      padding: 0 0.25rem;
+    }
+
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .pill {
+      border: 1px solid #cbd5f5;
+      border-radius: 999px;
+      padding: 0.4rem 0.85rem;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pill.active {
+      background: #2f80ed;
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #form-errors {
+      background: #fee2e2;
+      color: #991b1b;
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+    }
+
+    #booking-list ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 1rem;
+    }
+
+    #booking-list li {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1rem;
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      table {
+        font-size: 0.9rem;
+      }
+
+      .booking-cell {
+        min-width: 140px;
+      }
+
+      #app-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header id="app-header" class="surface">
+      <div>
+        <h1>Room Hire Calendar</h1>
+        <p>Plan Staffordshire Chambers room bookings in convenient 30-minute slots.</p>
+      </div>
+      <button id="toggle-form" class="btn-primary">New Booking</button>
+    </header>
+
+    <section id="date-navigator" class="surface">
+      <button data-action="prev">Previous</button>
+      <strong id="selected-date-label"></strong>
+      <button data-action="next">Next</button>
+      <input type="date" id="date-picker" />
+      <button data-action="today" class="btn-primary" style="margin-left:auto;">Today</button>
+    </section>
+
+    <section id="room-legend"></section>
+
+    <section id="calendar" class="surface" style="overflow-x:auto;"></section>
+
+    <section id="form-section" class="surface hidden">
+      <h2 id="form-title">Create Booking</h2>
+      <div id="form-errors" class="hidden"></div>
+      <form id="booking-form">
+        <div class="form-grid" style="display:grid;gap:1rem;">
+          <label>
+            Contact name
+            <input type="text" name="contactName" required />
+          </label>
+          <label>
+            Number of attendees
+            <input type="number" name="attendeeCount" min="1" value="1" required />
+          </label>
+          <label>
+            Layout
+            <select name="layout">
+              <option value="boardroom">Boardroom</option>
+              <option value="u-shape">U-Shape</option>
+              <option value="theatre">Theatre</option>
+            </select>
+          </label>
+
+          <fieldset>
+            <legend>Rooms</legend>
+            <div id="room-options" class="pill-group"></div>
+          </fieldset>
+
+          <label>
+            Start time
+            <input type="datetime-local" name="startTime" required />
+          </label>
+          <label>
+            End time
+            <input type="datetime-local" name="endTime" required />
+          </label>
+
+          <label style="display:flex;align-items:center;gap:0.5rem;font-weight:600;">
+            <input type="checkbox" name="refreshments" />
+            Refreshments required?
+          </label>
+          <label id="refreshments-details" class="hidden">
+            Refreshments details
+            <textarea name="refreshmentsDetails"></textarea>
+          </label>
+
+          <label style="display:flex;align-items:center;gap:0.5rem;font-weight:600;">
+            <input type="checkbox" name="lunch" />
+            Lunch required?
+          </label>
+          <label id="lunch-details" class="hidden">
+            Lunch details
+            <textarea name="lunchDetails"></textarea>
+          </label>
+
+          <fieldset>
+            <legend>Equipment</legend>
+            <div id="equipment-options" class="pill-group"></div>
+          </fieldset>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:0.75rem;margin-top:1rem;">
+          <button type="button" id="cancel-form" class="btn-secondary">Cancel</button>
+          <button type="submit" class="btn-primary">Save Booking</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="booking-list" class="surface"></section>
+  </main>
+
+  <script type="module">
+    const rooms = [
+      { id: 1, name: "Room 1", capacity: 20, defaultLayout: "boardroom" },
+      { id: 2, name: "Room 2", capacity: 25, defaultLayout: "boardroom" },
+      { id: 3, name: "Room 3", capacity: 30, defaultLayout: "theatre" },
+      { id: 4, name: "Room 4", capacity: 30, defaultLayout: "theatre" },
+      { id: 5, name: "The Pod", capacity: 8, defaultLayout: "u-shape" },
+      { id: 6, name: "Boardroom", capacity: 12, defaultLayout: "boardroom" },
+      { id: 7, name: "Members Lounge Room", capacity: 40, defaultLayout: "theatre" }
+    ];
+
+    const equipmentCatalog = [
+      { value: "laptop", label: "Laptop" },
+      { value: "projector", label: "Projector" },
+      { value: "flipchart", label: "Flipchart" }
+    ];
+
+    const today = new Date();
+    let bookingSequence = 3;
+    let selectedDate = formatDateInput(today);
+    let editingBookingId = null;
+
+    let bookings = [
+      {
+        id: 1,
+        contactName: "Jane Cooper",
+        attendeeCount: 14,
+        layout: "boardroom",
+        refreshments: true,
+        refreshmentsDetails: "Tea, coffee, biscuits",
+        lunch: false,
+        lunchDetails: "",
+        equipment: ["projector"],
+        rooms: [1, 6],
+        startTime: combineDateTime(selectedDate, "09:00"),
+        endTime: combineDateTime(selectedDate, "11:30")
+      },
+      {
+        id: 2,
+        contactName: "Gary Fox",
+        attendeeCount: 22,
+        layout: "theatre",
+        refreshments: true,
+        refreshmentsDetails: "Tea urn",
+        lunch: true,
+        lunchDetails: "Sandwich platter",
+        equipment: ["flipchart"],
+        rooms: [3],
+        startTime: combineDateTime(selectedDate, "13:00"),
+        endTime: combineDateTime(selectedDate, "15:30")
+      }
+    ];
+
+    const toggleFormBtn = document.querySelector("#toggle-form");
+    const formSection = document.querySelector("#form-section");
+    const formTitle = document.querySelector("#form-title");
+    const bookingForm = document.querySelector("#booking-form");
+    const formErrors = document.querySelector("#form-errors");
+    const cancelFormBtn = document.querySelector("#cancel-form");
+    const roomOptions = document.querySelector("#room-options");
+    const equipmentOptions = document.querySelector("#equipment-options");
+    const dateLabel = document.querySelector("#selected-date-label");
+    const datePicker = document.querySelector("#date-picker");
+    const dateNavigator = document.querySelector("#date-navigator");
+    const roomLegend = document.querySelector("#room-legend");
+    const calendar = document.querySelector("#calendar");
+    const bookingList = document.querySelector("#booking-list");
+
+    equipmentCatalog.forEach((item) => {
+      const pill = document.createElement("label");
+      pill.className = "pill";
+      pill.dataset.value = item.value;
+      pill.innerHTML = `<input type="checkbox" class="visually-hidden" value="${item.value}" />${item.label}`;
+      equipmentOptions.appendChild(pill);
+    });
+
+    rooms.forEach((room) => {
+      const pill = document.createElement("label");
+      pill.className = "pill";
+      pill.dataset.value = room.id;
+      pill.innerHTML = `<input type="checkbox" class="visually-hidden" value="${room.id}" />${room.name}`;
+      roomOptions.appendChild(pill);
+    });
+
+    const refreshCheckbox = bookingForm.querySelector('input[name="refreshments"]');
+    const lunchCheckbox = bookingForm.querySelector('input[name="lunch"]');
+    const refreshmentsDetails = document.querySelector("#refreshments-details");
+    const lunchDetails = document.querySelector("#lunch-details");
+
+    refreshCheckbox.addEventListener("change", () => {
+      refreshmentsDetails.classList.toggle("hidden", !refreshCheckbox.checked);
+      if (!refreshCheckbox.checked) {
+        bookingForm.refreshmentsDetails.value = "";
+      }
+    });
+
+    lunchCheckbox.addEventListener("change", () => {
+      lunchDetails.classList.toggle("hidden", !lunchCheckbox.checked);
+      if (!lunchCheckbox.checked) {
+        bookingForm.lunchDetails.value = "";
+      }
+    });
+
+    toggleFormBtn.addEventListener("click", () => {
+      if (formSection.classList.contains("hidden")) {
+        startCreateFlow();
+      } else {
+        closeForm();
+      }
+    });
+
+    cancelFormBtn.addEventListener("click", () => {
+      closeForm();
+    });
+
+    bookingForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      handleSubmit();
+    });
+
+    dateNavigator.addEventListener("click", (event) => {
+      const action = event.target.dataset.action;
+      if (!action) return;
+
+      const current = new Date(selectedDate + "T00:00");
+      if (action === "prev") {
+        current.setDate(current.getDate() - 1);
+      } else if (action === "next") {
+        current.setDate(current.getDate() + 1);
+      } else if (action === "today") {
+        current.setTime(today.getTime());
+      }
+      selectedDate = formatDateInput(current);
+      render();
+    });
+
+    datePicker.addEventListener("change", () => {
+      if (datePicker.value) {
+        selectedDate = datePicker.value;
+        render();
+      }
+    });
+
+    function render() {
+      dateLabel.textContent = formatHumanDate(selectedDate);
+      datePicker.value = selectedDate;
+      renderRooms();
+      renderCalendar();
+      renderBookingList();
+      if (!formSection.classList.contains("hidden")) {
+        if (editingBookingId) {
+          const booking = bookings.find((b) => b.id === editingBookingId);
+          if (booking) {
+            populateForm(booking);
+          }
+        } else {
+          setDefaultFormValues();
+        }
+      }
+    }
+
+    function renderRooms() {
+      roomLegend.innerHTML = "";
+      rooms.forEach((room) => {
+        const card = document.createElement("article");
+        card.className = "room-card";
+        card.innerHTML = `
+          <strong>${room.name}</strong>
+          <div>Capacity: ${room.capacity}</div>
+          <div>Default layout: ${capitalize(room.defaultLayout)}</div>
+        `;
+        roomLegend.appendChild(card);
+      });
+    }
+
+    function renderCalendar() {
+      const relevantBookings = bookings.filter((booking) => isSameDay(booking.startTime, selectedDate));
+      relevantBookings.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+      const slots = generateTimeSlots();
+      const table = document.createElement("table");
+
+      const thead = document.createElement("thead");
+      const headRow = document.createElement("tr");
+      const timeHeader = document.createElement("th");
+      timeHeader.textContent = "Time";
+      headRow.appendChild(timeHeader);
+      rooms.forEach((room) => {
+        const th = document.createElement("th");
+        th.textContent = room.name;
+        headRow.appendChild(th);
+      });
+      thead.appendChild(headRow);
+
+      const tbody = document.createElement("tbody");
+      slots.forEach((slot) => {
+        const row = document.createElement("tr");
+        const timeCell = document.createElement("td");
+        timeCell.textContent = slot.label;
+        timeCell.className = "time-cell";
+        row.appendChild(timeCell);
+
+        rooms.forEach((room) => {
+          const cell = document.createElement("td");
+          cell.className = "booking-cell";
+          const booking = findBookingForCell(relevantBookings, room.id, slot.start);
+          if (booking) {
+            cell.classList.add("active");
+            if (isSameMinute(booking.startTime, slot.start)) {
+              cell.innerHTML = `
+                <div class="booking-chip">
+                  <strong>${booking.contactName}</strong>
+                  <span>${formatTime(booking.startTime)} - ${formatTime(booking.endTime)}</span>
+                  <span>${booking.attendeeCount} attendees</span>
+                </div>
+              `;
+            }
+            cell.addEventListener("click", () => {
+              startEditFlow(booking);
+            });
+          }
+          row.appendChild(cell);
+        });
+
+        tbody.appendChild(row);
+      });
+
+      table.appendChild(thead);
+      table.appendChild(tbody);
+      calendar.innerHTML = "";
+      calendar.appendChild(table);
+    }
+
+    function renderBookingList() {
+      const relevantBookings = bookings
+        .filter((booking) => isSameDay(booking.startTime, selectedDate))
+        .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+
+      if (relevantBookings.length === 0) {
+        bookingList.innerHTML = `<h2>Bookings</h2><p>No bookings for this day.</p>`;
+        return;
+      }
+
+      const list = document.createElement("ul");
+      relevantBookings.forEach((booking) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <div>
+            <strong>${booking.contactName}</strong> · ${booking.attendeeCount} attendees<br />
+            ${formatTime(booking.startTime)} - ${formatTime(booking.endTime)}
+          </div>
+          <div>Rooms: ${booking.rooms.map((id) => rooms.find((r) => r.id === id)?.name).join(", ")}</div>
+          <div>Layout: ${capitalize(booking.layout)}</div>
+          ${booking.refreshments ? `<div>Refreshments: ${booking.refreshmentsDetails || "Yes"}</div>` : ""}
+          ${booking.lunch ? `<div>Lunch: ${booking.lunchDetails || "Yes"}</div>` : ""}
+          ${booking.equipment.length ? `<div>Equipment: ${booking.equipment.map(capitalize).join(", ")}</div>` : ""}
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.75rem;">
+            <button class="btn-secondary" data-action="edit" data-id="${booking.id}">Edit</button>
+            <button class="btn-danger" data-action="delete" data-id="${booking.id}">Delete</button>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+
+      bookingList.innerHTML = "";
+      const heading = document.createElement("h2");
+      heading.textContent = "Bookings";
+      bookingList.appendChild(heading);
+      bookingList.appendChild(list);
+
+      bookingList.querySelectorAll('button[data-action="edit"]').forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const booking = bookings.find((b) => b.id === Number(btn.dataset.id));
+          if (booking) startEditFlow(booking);
+        });
+      });
+
+      bookingList.querySelectorAll('button[data-action="delete"]').forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const bookingId = Number(btn.dataset.id);
+          const booking = bookings.find((b) => b.id === bookingId);
+          if (booking && confirm(`Delete booking for ${booking.contactName}?`)) {
+            bookings = bookings.filter((b) => b.id !== bookingId);
+            if (editingBookingId === bookingId) {
+              closeForm();
+            }
+            render();
+          }
+        });
+      });
+    }
+
+    function startCreateFlow() {
+      editingBookingId = null;
+      formTitle.textContent = "Create Booking";
+      bookingForm.reset();
+      clearSelections();
+      setDefaultFormValues();
+      formErrors.classList.add("hidden");
+      formSection.classList.remove("hidden");
+      toggleFormBtn.textContent = "Close Form";
+    }
+
+    function startEditFlow(booking) {
+      editingBookingId = booking.id;
+      formTitle.textContent = "Edit Booking";
+      formErrors.classList.add("hidden");
+      formSection.classList.remove("hidden");
+      toggleFormBtn.textContent = "Close Form";
+      populateForm(booking);
+    }
+
+    function closeForm() {
+      formSection.classList.add("hidden");
+      toggleFormBtn.textContent = "New Booking";
+      editingBookingId = null;
+      bookingForm.reset();
+      clearSelections();
+      refreshmentsDetails.classList.add("hidden");
+      lunchDetails.classList.add("hidden");
+      formErrors.classList.add("hidden");
+    }
+
+    function populateForm(booking) {
+      bookingForm.contactName.value = booking.contactName;
+      bookingForm.attendeeCount.value = booking.attendeeCount;
+      bookingForm.layout.value = booking.layout;
+
+      setCheckboxSelections(roomOptions, booking.rooms.map(String));
+      setCheckboxSelections(equipmentOptions, booking.equipment);
+
+      bookingForm.startTime.value = toLocalInputValue(booking.startTime);
+      bookingForm.endTime.value = toLocalInputValue(booking.endTime);
+
+      bookingForm.refreshments.checked = booking.refreshments;
+      refreshmentsDetails.classList.toggle("hidden", !booking.refreshments);
+      bookingForm.refreshmentsDetails.value = booking.refreshmentsDetails || "";
+
+      bookingForm.lunch.checked = booking.lunch;
+      lunchDetails.classList.toggle("hidden", !booking.lunch);
+      bookingForm.lunchDetails.value = booking.lunchDetails || "";
+    }
+
+    function setDefaultFormValues() {
+      bookingForm.startTime.value = `${selectedDate}T09:00`;
+      bookingForm.endTime.value = `${selectedDate}T10:00`;
+      setCheckboxSelections(roomOptions, []);
+      setCheckboxSelections(equipmentOptions, []);
+      bookingForm.refreshments.checked = false;
+      bookingForm.lunch.checked = false;
+      refreshmentsDetails.classList.add("hidden");
+      lunchDetails.classList.add("hidden");
+    }
+
+    function clearSelections() {
+      roomOptions.querySelectorAll("input").forEach((input) => {
+        input.checked = false;
+        input.parentElement.classList.remove("active");
+      });
+      equipmentOptions.querySelectorAll("input").forEach((input) => {
+        input.checked = false;
+        input.parentElement.classList.remove("active");
+      });
+    }
+
+    function setCheckboxSelections(container, values) {
+      container.querySelectorAll("input").forEach((input) => {
+        const isSelected = values.includes(input.value);
+        input.checked = isSelected;
+        input.parentElement.classList.toggle("active", isSelected);
+      });
+    }
+
+    roomOptions.addEventListener("click", (event) => {
+      const label = event.target.closest("label");
+      if (!label) return;
+      const input = label.querySelector("input");
+      input.checked = !input.checked;
+      label.classList.toggle("active", input.checked);
+    });
+
+    equipmentOptions.addEventListener("click", (event) => {
+      const label = event.target.closest("label");
+      if (!label) return;
+      const input = label.querySelector("input");
+      input.checked = !input.checked;
+      label.classList.toggle("active", input.checked);
+    });
+
+    function handleSubmit() {
+      const formData = new FormData(bookingForm);
+      const payload = {
+        contactName: formData.get("contactName").trim(),
+        attendeeCount: Number(formData.get("attendeeCount")),
+        layout: formData.get("layout"),
+        refreshments: formData.get("refreshments") === "on",
+        refreshmentsDetails: formData.get("refreshmentsDetails")?.trim() || "",
+        lunch: formData.get("lunch") === "on",
+        lunchDetails: formData.get("lunchDetails")?.trim() || "",
+        equipment: getCheckedValues(equipmentOptions),
+        rooms: getCheckedValues(roomOptions).map(Number),
+        startTime: formData.get("startTime"),
+        endTime: formData.get("endTime")
+      };
+
+      const errors = validateBooking(payload);
+      if (errors.length) {
+        showErrors(errors);
+        return;
+      }
+
+      if (editingBookingId) {
+        payload.id = editingBookingId;
+        bookings = bookings.map((booking) => (booking.id === editingBookingId ? { ...booking, ...payload } : booking));
+      } else {
+        payload.id = bookingSequence++;
+        bookings.push(payload);
+      }
+
+      closeForm();
+      render();
+    }
+
+    function validateBooking(booking) {
+      const issues = [];
+      if (!booking.contactName || booking.contactName.length < 2) {
+        issues.push("Contact name must be at least 2 characters long.");
+      }
+      if (!Number.isFinite(booking.attendeeCount) || booking.attendeeCount < 1) {
+        issues.push("Attendee count must be a positive number.");
+      }
+      if (!booking.rooms.length) {
+        issues.push("Select at least one room.");
+      }
+
+      const start = new Date(booking.startTime);
+      const end = new Date(booking.endTime);
+      if (!isFinite(start) || !isFinite(end)) {
+        issues.push("Start and end time must be valid.");
+      } else {
+        if (end <= start) {
+          issues.push("End time must be after start time.");
+        }
+        if (!isHalfHourIncrement(start) || !isHalfHourIncrement(end)) {
+          issues.push("Bookings must start and end on a 30-minute boundary.");
+        }
+        if (!isMultipleOfHalfHour(start, end)) {
+          issues.push("Booking duration must be in 30-minute increments.");
+        }
+        if (!isSameDay(booking.startTime, booking.endTime)) {
+          issues.push("Booking must start and end on the same day.");
+        }
+        if (formatDateInput(start) !== selectedDate) {
+          issues.push("Booking must fall on the selected day.");
+        }
+      }
+
+      const conflicting = findConflicts(booking, editingBookingId);
+      if (conflicting.length) {
+        issues.push(`Conflicts with existing booking(s) in: ${conflicting.join(", ")}.`);
+      }
+
+      return issues;
+    }
+
+    function showErrors(errors) {
+      formErrors.innerHTML = `<strong>Please fix the following:</strong><ul>${errors
+        .map((error) => `<li>${error}</li>`)
+        .join("")}</ul>`;
+      formErrors.classList.remove("hidden");
+    }
+
+    function findConflicts(booking, excludeId) {
+      const start = new Date(booking.startTime);
+      const end = new Date(booking.endTime);
+      const conflicts = new Set();
+
+      bookings.forEach((existing) => {
+        if (excludeId && existing.id === excludeId) return;
+        if (!isSameDay(existing.startTime, booking.startTime)) return;
+
+        const existingStart = new Date(existing.startTime);
+        const existingEnd = new Date(existing.endTime);
+        const overlaps = existingStart < end && existingEnd > start;
+        if (!overlaps) return;
+
+        existing.rooms.forEach((roomId) => {
+          if (booking.rooms.includes(roomId)) {
+            conflicts.add(rooms.find((room) => room.id === roomId)?.name || `Room ${roomId}`);
+          }
+        });
+      });
+
+      return Array.from(conflicts);
+    }
+
+    function getCheckedValues(container) {
+      return Array.from(container.querySelectorAll("input:checked")).map((input) => input.value);
+    }
+
+    function generateTimeSlots() {
+      const slots = [];
+      const start = new Date(selectedDate + "T07:00");
+      const end = new Date(selectedDate + "T20:00");
+      let current = new Date(start);
+      while (current < end) {
+        slots.push({
+          start: new Date(current),
+          label: formatTime(current)
+        });
+        current = new Date(current.getTime() + 30 * 60 * 1000);
+      }
+      return slots;
+    }
+
+    function findBookingForCell(bookingsForDay, roomId, slotStart) {
+      return bookingsForDay.find((booking) => {
+        if (!booking.rooms.includes(roomId)) return false;
+        const start = new Date(booking.startTime);
+        const end = new Date(booking.endTime);
+        return start <= slotStart && end > slotStart;
+      });
+    }
+
+    function isSameMinute(dateLike, compareLike) {
+      const a = new Date(dateLike);
+      const b = new Date(compareLike);
+      return (
+        a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate() &&
+        a.getHours() === b.getHours() &&
+        a.getMinutes() === b.getMinutes()
+      );
+    }
+
+    function isHalfHourIncrement(date) {
+      const minutes = date.getMinutes();
+      return minutes === 0 || minutes === 30;
+    }
+
+    function isMultipleOfHalfHour(start, end) {
+      const diff = end.getTime() - start.getTime();
+      return diff % (30 * 60 * 1000) === 0;
+    }
+
+    function isSameDay(startLike, endLike) {
+      const a = new Date(startLike);
+      const b = new Date(endLike);
+      return (
+        a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate()
+      );
+    }
+
+    function formatTime(dateLike) {
+      const date = new Date(dateLike);
+      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+    }
+
+    function formatHumanDate(dateInput) {
+      const date = new Date(dateInput + "T00:00");
+      return date.toLocaleDateString(undefined, {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+    }
+
+    function formatDateInput(dateLike) {
+      const date = new Date(dateLike);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function toLocalInputValue(dateLike) {
+      const date = new Date(dateLike);
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, "0");
+      const dd = String(date.getDate()).padStart(2, "0");
+      const hh = String(date.getHours()).padStart(2, "0");
+      const mi = String(date.getMinutes()).padStart(2, "0");
+      return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
+    }
+
+    function combineDateTime(dateInput, timeString) {
+      return `${dateInput}T${timeString}`;
+    }
+
+    function capitalize(value) {
+      return value ? value.charAt(0).toUpperCase() + value.slice(1) : "";
+    }
+
+    render();
+  </script>
+</body>
+</html>
