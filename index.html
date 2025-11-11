@@ -15,13 +15,14 @@
 
     body {
       margin: 0;
-      background: #f1f5f9;
+      min-height: 100vh;
+      background: linear-gradient(160deg, #e0f2ff 0%, #f8fafc 50%, #e2e8f0 100%);
     }
 
     main {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 1.5rem;
+      padding: 2rem 1.5rem 3rem;
       display: grid;
       gap: 1.5rem;
     }
@@ -61,6 +62,12 @@
       border-radius: 10px;
       box-shadow: 0 1px 4px rgba(15, 23, 42, 0.12);
       padding: 1.25rem;
+    }
+
+    #calendar.surface {
+      background: transparent;
+      box-shadow: none;
+      padding: 0;
     }
 
     body.modal-open {
@@ -107,6 +114,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
+      background: linear-gradient(135deg, rgba(47, 128, 237, 0.12), rgba(168, 85, 247, 0.12));
     }
 
     #date-navigator {
@@ -114,6 +122,11 @@
       flex-wrap: wrap;
       gap: 0.75rem;
       align-items: center;
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      box-shadow: inset 0 0 0 1px rgba(226, 232, 240, 0.12);
     }
 
     #date-navigator strong {
@@ -123,44 +136,44 @@
 
     #date-navigator button {
       padding: 0.6rem 1rem;
-      background: #e1e7f0;
+      background: rgba(226, 232, 240, 0.18);
+      color: inherit;
+      border: 1px solid rgba(226, 232, 240, 0.3);
+    }
+
+    #date-navigator button.btn-primary {
+      background: #2f80ed;
+      color: #fff;
+      border: none;
     }
 
     #date-navigator input[type="date"] {
       font: inherit;
-      padding: 0.5rem;
-      border-radius: 6px;
-      border: 1px solid #cbd5f5;
-      background: #fff;
-    }
-
-    #room-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .room-card {
-      min-width: 170px;
-      background: #fff;
+      padding: 0.45rem 0.6rem;
       border-radius: 8px;
-      padding: 0.85rem;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+      border: none;
+      background: rgba(226, 232, 240, 0.18);
+      color: inherit;
     }
 
     table {
       border-collapse: collapse;
       width: 100%;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(15, 23, 42, 0.12);
     }
 
     th, td {
       border: 1px solid #e2e8f0;
-      padding: 0.5rem;
+      padding: 0.6rem 0.7rem;
       text-align: left;
     }
 
     thead th {
-      background: #f1f5f9;
+      background: linear-gradient(180deg, #eff6ff 0%, #e2e8f0 100%);
+      color: #0f172a;
       position: sticky;
       top: 0;
       z-index: 1;
@@ -169,7 +182,7 @@
     tbody td.time-cell {
       position: sticky;
       left: 0;
-      background: #f8fafc;
+      background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
       font-weight: 600;
       width: 90px;
     }
@@ -183,16 +196,17 @@
     }
 
     .booking-cell.active {
-      background: #dbeafe;
+      background: rgba(47, 128, 237, 0.15);
       cursor: pointer;
     }
 
     .booking-cell.available {
       cursor: pointer;
+      background: rgba(15, 23, 42, 0.02);
     }
 
     .booking-cell.available:hover {
-      background: #eef2ff;
+      background: rgba(47, 128, 237, 0.08);
     }
 
     .booking-cell .empty-slot {
@@ -217,6 +231,9 @@
     .booking-chip {
       display: grid;
       gap: 0.35rem;
+      background: rgba(47, 128, 237, 0.12);
+      border-radius: 8px;
+      padding: 0.5rem 0.6rem;
     }
 
     form label {
@@ -313,6 +330,7 @@
       padding: 1rem;
       display: grid;
       gap: 0.5rem;
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.08), rgba(59, 130, 246, 0.08));
     }
 
     @media (max-width: 768px) {
@@ -348,8 +366,6 @@
       <input type="date" id="date-picker" />
       <button data-action="today" class="btn-primary" style="margin-left:auto;">Today</button>
     </section>
-
-    <section id="room-legend"></section>
 
     <section id="calendar" class="surface" style="overflow-x:auto;"></section>
 
@@ -499,7 +515,6 @@
     const dateLabel = document.querySelector("#selected-date-label");
     const datePicker = document.querySelector("#date-picker");
     const dateNavigator = document.querySelector("#date-navigator");
-    const roomLegend = document.querySelector("#room-legend");
     const calendar = document.querySelector("#calendar");
     const bookingList = document.querySelector("#booking-list");
 
@@ -591,23 +606,8 @@
     function render() {
       dateLabel.textContent = formatHumanDate(selectedDate);
       datePicker.value = selectedDate;
-      renderRooms();
       renderCalendar();
       renderBookingList();
-    }
-
-    function renderRooms() {
-      roomLegend.innerHTML = "";
-      rooms.forEach((room) => {
-        const card = document.createElement("article");
-        card.className = "room-card";
-        card.innerHTML = `
-          <strong>${room.name}</strong>
-          <div>Capacity: ${room.capacity}</div>
-          <div>Default layout: ${capitalize(room.defaultLayout)}</div>
-        `;
-        roomLegend.appendChild(card);
-      });
     }
 
     function renderCalendar() {
@@ -995,8 +995,8 @@
 
     function generateTimeSlots() {
       const slots = [];
-      const start = new Date(selectedDate + "T07:00");
-      const end = new Date(selectedDate + "T20:00");
+      const start = new Date(selectedDate + "T08:00");
+      const end = new Date(selectedDate + "T18:00");
       let current = new Date(start);
       while (current < end) {
         slots.push({
