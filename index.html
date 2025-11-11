@@ -63,6 +63,44 @@
       padding: 1.25rem;
     }
 
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+    }
+
+    .modal-content {
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+      width: min(620px, 92vw);
+      z-index: 1001;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: transparent;
+      color: #475569;
+      font-size: 1.4rem;
+      line-height: 1;
+      padding: 0.2rem;
+    }
+
     #app-header {
       display: flex;
       flex-wrap: wrap;
@@ -140,11 +178,40 @@
       min-width: 180px;
       background: transparent;
       cursor: default;
+      position: relative;
+      transition: background 0.2s ease;
     }
 
     .booking-cell.active {
       background: #dbeafe;
       cursor: pointer;
+    }
+
+    .booking-cell.available {
+      cursor: pointer;
+    }
+
+    .booking-cell.available:hover {
+      background: #eef2ff;
+    }
+
+    .booking-cell .empty-slot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 999px;
+      background: rgba(47, 128, 237, 0.1);
+      color: #2f80ed;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .booking-cell.available:hover .empty-slot,
+    .booking-cell.available:focus-within .empty-slot {
+      opacity: 1;
     }
 
     .booking-chip {
@@ -286,7 +353,19 @@
 
     <section id="calendar" class="surface" style="overflow-x:auto;"></section>
 
-    <section id="form-section" class="surface hidden">
+    <section id="booking-list" class="surface"></section>
+  </main>
+
+  <div
+    id="booking-modal"
+    class="modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="form-title"
+  >
+    <div class="modal-backdrop" data-dismiss="modal"></div>
+    <div class="modal-content surface">
+      <button type="button" class="modal-close" id="close-modal" aria-label="Close booking form">&times;</button>
       <h2 id="form-title">Create Booking</h2>
       <div id="form-errors" class="hidden"></div>
       <form id="booking-form">
@@ -351,10 +430,8 @@
           <button type="submit" class="btn-primary">Save Booking</button>
         </div>
       </form>
-    </section>
-
-    <section id="booking-list" class="surface"></section>
-  </main>
+    </div>
+  </div>
 
   <script type="module">
     const rooms = [
@@ -410,7 +487,9 @@
     ];
 
     const toggleFormBtn = document.querySelector("#toggle-form");
-    const formSection = document.querySelector("#form-section");
+    const bookingModal = document.querySelector("#booking-modal");
+    const modalCloseBtn = document.querySelector("#close-modal");
+    const modalBackdrop = bookingModal.querySelector(".modal-backdrop");
     const formTitle = document.querySelector("#form-title");
     const bookingForm = document.querySelector("#booking-form");
     const formErrors = document.querySelector("#form-errors");
@@ -460,15 +539,25 @@
     });
 
     toggleFormBtn.addEventListener("click", () => {
-      if (formSection.classList.contains("hidden")) {
-        startCreateFlow();
-      } else {
-        closeForm();
-      }
+      startCreateFlow();
     });
 
     cancelFormBtn.addEventListener("click", () => {
       closeForm();
+    });
+
+    modalCloseBtn.addEventListener("click", () => {
+      closeForm();
+    });
+
+    modalBackdrop.addEventListener("click", () => {
+      closeForm();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !bookingModal.classList.contains("hidden")) {
+        closeForm();
+      }
     });
 
     bookingForm.addEventListener("submit", (event) => {
@@ -505,16 +594,6 @@
       renderRooms();
       renderCalendar();
       renderBookingList();
-      if (!formSection.classList.contains("hidden")) {
-        if (editingBookingId) {
-          const booking = bookings.find((b) => b.id === editingBookingId);
-          if (booking) {
-            populateForm(booking);
-          }
-        } else {
-          setDefaultFormValues();
-        }
-      }
     }
 
     function renderRooms() {
@@ -574,6 +653,40 @@
             }
             cell.addEventListener("click", () => {
               startEditFlow(booking);
+            });
+            cell.tabIndex = 0;
+            cell.setAttribute(
+              "aria-label",
+              `View booking for ${booking.contactName} in ${room.name} starting ${formatTime(booking.startTime)}`
+            );
+            cell.addEventListener("keydown", (event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                startEditFlow(booking);
+              }
+            });
+          } else {
+            cell.classList.add("available");
+            cell.title = `Add booking for ${room.name} at ${slot.label}`;
+            const prompt = document.createElement("span");
+            prompt.className = "empty-slot";
+            prompt.textContent = "+";
+            prompt.setAttribute("aria-hidden", "true");
+            cell.appendChild(prompt);
+            cell.tabIndex = 0;
+            cell.setAttribute(
+              "aria-label",
+              `Add booking for ${room.name} starting ${slot.label}`
+            );
+            const openCreate = () => {
+              startCreateFlow({ roomId: room.id, startTime: slot.start });
+            };
+            cell.addEventListener("click", openCreate);
+            cell.addEventListener("keydown", (event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                openCreate();
+              }
             });
           }
           row.appendChild(cell);
@@ -647,35 +760,71 @@
       });
     }
 
-    function startCreateFlow() {
+    function startCreateFlow(preset = {}) {
       editingBookingId = null;
       formTitle.textContent = "Create Booking";
+      formErrors.classList.add("hidden");
+      formErrors.innerHTML = "";
       bookingForm.reset();
       clearSelections();
-      setDefaultFormValues();
-      formErrors.classList.add("hidden");
-      formSection.classList.remove("hidden");
-      toggleFormBtn.textContent = "Close Form";
+      refreshmentsDetails.classList.add("hidden");
+      lunchDetails.classList.add("hidden");
+
+      const fallbackStart = new Date(selectedDate + "T09:00");
+      let start = preset.startTime ? new Date(preset.startTime) : fallbackStart;
+      if (Number.isNaN(start.getTime())) {
+        start = fallbackStart;
+      }
+      const durationMinutes = preset.durationMinutes ?? 60;
+      const end = new Date(start.getTime() + durationMinutes * 60 * 1000);
+      const latestAllowed = new Date(selectedDate + "T20:00");
+      if (end > latestAllowed) {
+        end.setTime(latestAllowed.getTime());
+      }
+
+      bookingForm.contactName.value = preset.contactName ?? "";
+      bookingForm.attendeeCount.value = preset.attendeeCount ?? 1;
+      bookingForm.layout.value = preset.layout ?? "boardroom";
+      bookingForm.startTime.value = toLocalInputValue(start);
+      bookingForm.endTime.value = toLocalInputValue(end);
+
+      setCheckboxSelections(roomOptions, preset.roomId ? [String(preset.roomId)] : []);
+      setCheckboxSelections(equipmentOptions, preset.equipment ?? []);
+
+      document.body.classList.add("modal-open");
+      bookingModal.classList.remove("hidden");
+      setTimeout(() => {
+        bookingForm.contactName.focus();
+      }, 0);
     }
 
     function startEditFlow(booking) {
       editingBookingId = booking.id;
       formTitle.textContent = "Edit Booking";
       formErrors.classList.add("hidden");
-      formSection.classList.remove("hidden");
-      toggleFormBtn.textContent = "Close Form";
+      formErrors.innerHTML = "";
+      bookingForm.reset();
+      clearSelections();
+      refreshmentsDetails.classList.add("hidden");
+      lunchDetails.classList.add("hidden");
+      document.body.classList.add("modal-open");
+      bookingModal.classList.remove("hidden");
       populateForm(booking);
+      setTimeout(() => {
+        bookingForm.contactName.focus();
+      }, 0);
     }
 
     function closeForm() {
-      formSection.classList.add("hidden");
-      toggleFormBtn.textContent = "New Booking";
+      bookingModal.classList.add("hidden");
+      document.body.classList.remove("modal-open");
       editingBookingId = null;
       bookingForm.reset();
       clearSelections();
       refreshmentsDetails.classList.add("hidden");
       lunchDetails.classList.add("hidden");
       formErrors.classList.add("hidden");
+      formErrors.innerHTML = "";
     }
 
     function populateForm(booking) {
@@ -696,17 +845,6 @@
       bookingForm.lunch.checked = booking.lunch;
       lunchDetails.classList.toggle("hidden", !booking.lunch);
       bookingForm.lunchDetails.value = booking.lunchDetails || "";
-    }
-
-    function setDefaultFormValues() {
-      bookingForm.startTime.value = `${selectedDate}T09:00`;
-      bookingForm.endTime.value = `${selectedDate}T10:00`;
-      setCheckboxSelections(roomOptions, []);
-      setCheckboxSelections(equipmentOptions, []);
-      bookingForm.refreshments.checked = false;
-      bookingForm.lunch.checked = false;
-      refreshmentsDetails.classList.add("hidden");
-      lunchDetails.classList.add("hidden");
     }
 
     function clearSelections() {

@@ -14,7 +14,7 @@ This repository now ships as a single self-contained HTML file that recreates th
 
 1. Open `index.html` in a modern browser (Chrome, Edge, Firefox, Safari).
 2. Use the navigation controls to change day or jump to a specific date.
-3. Click **New Booking** (or tap an existing booking) to open the editor form.
+3. Click **New Booking** or tap an empty slot/time cell to open the booking popup (existing bookings open the editor for updates).
 4. Fill in the required information and save—new entries appear instantly in the calendar and list.
 
 To share or host the prototype, simply copy `index.html` to your web server or hosting provider. No additional configuration is required.
