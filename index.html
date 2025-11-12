@@ -507,8 +507,12 @@
       <form id="booking-form">
         <div class="form-grid" style="display:grid;gap:1rem;">
           <label>
-            Contact name
-            <input type="text" name="contactName" required />
+            Company name
+            <input type="text" name="companyName" required />
+          </label>
+          <label>
+            Main point of contact
+            <input type="text" name="mainContact" required />
           </label>
           <label>
             Number of attendees
@@ -594,7 +598,8 @@
     let bookings = [
       {
         id: 1,
-        contactName: "Jane Cooper",
+        companyName: "Cooper Consulting",
+        mainContact: "Jane Cooper",
         attendeeCount: 14,
         layout: "boardroom",
         refreshments: true,
@@ -608,7 +613,8 @@
       },
       {
         id: 2,
-        contactName: "Gary Fox",
+        companyName: "Fox Media Ltd",
+        mainContact: "Gary Fox",
         attendeeCount: 22,
         layout: "theatre",
         refreshments: true,
@@ -765,7 +771,7 @@
             if (isSameMinute(booking.startTime, slot.start)) {
               cell.innerHTML = `
                 <div class="booking-chip">
-                  <strong>${booking.contactName}</strong>
+                  <strong>${booking.companyName}</strong>
                   <div class="chip-attendees">${booking.attendeeCount} attendee${
                     booking.attendeeCount === 1 ? "" : "s"
                   }</div>
@@ -778,7 +784,7 @@
             cell.tabIndex = 0;
             cell.setAttribute(
               "aria-label",
-              `View booking for ${booking.contactName} in ${room.name} starting ${formatTime(booking.startTime)}`
+              `View booking for ${booking.companyName} (contact ${booking.mainContact}) in ${room.name} starting ${formatTime(booking.startTime)}`
             );
             cell.addEventListener("keydown", (event) => {
               if (event.key === "Enter" || event.key === " ") {
@@ -840,7 +846,9 @@
         const li = document.createElement("li");
         li.innerHTML = `
           <div>
-            <strong>${booking.contactName}</strong> · ${booking.attendeeCount} attendees<br />
+            <strong>${booking.companyName}</strong><br />
+            <span>Main contact: ${booking.mainContact}</span><br />
+            ${booking.attendeeCount} attendee${booking.attendeeCount === 1 ? "" : "s"}<br />
             ${formatTime(booking.startTime)} - ${formatTime(booking.endTime)}
           </div>
           <div>Rooms: ${booking.rooms.map((id) => rooms.find((r) => r.id === id)?.name).join(", ")}</div>
@@ -873,7 +881,7 @@
         btn.addEventListener("click", () => {
           const bookingId = Number(btn.dataset.id);
           const booking = bookings.find((b) => b.id === bookingId);
-          if (booking && confirm(`Delete booking for ${booking.contactName}?`)) {
+          if (booking && confirm(`Delete booking for ${booking.companyName}?`)) {
             bookings = bookings.filter((b) => b.id !== bookingId);
             if (editingBookingId === bookingId) {
               closeForm();
@@ -906,7 +914,8 @@
         end.setTime(latestAllowed.getTime());
       }
 
-      bookingForm.contactName.value = preset.contactName ?? "";
+      bookingForm.companyName.value = preset.companyName ?? "";
+      bookingForm.mainContact.value = preset.mainContact ?? "";
       bookingForm.attendeeCount.value = preset.attendeeCount ?? 1;
       bookingForm.layout.value = preset.layout ?? "boardroom";
       bookingForm.startTime.value = toLocalInputValue(start);
@@ -918,7 +927,7 @@
       document.body.classList.add("modal-open");
       bookingModal.classList.remove("hidden");
       setTimeout(() => {
-        bookingForm.contactName.focus();
+        bookingForm.companyName.focus();
       }, 0);
     }
 
@@ -935,7 +944,7 @@
       bookingModal.classList.remove("hidden");
       populateForm(booking);
       setTimeout(() => {
-        bookingForm.contactName.focus();
+        bookingForm.companyName.focus();
       }, 0);
     }
 
@@ -952,7 +961,8 @@
     }
 
     function populateForm(booking) {
-      bookingForm.contactName.value = booking.contactName;
+      bookingForm.companyName.value = booking.companyName;
+      bookingForm.mainContact.value = booking.mainContact;
       bookingForm.attendeeCount.value = booking.attendeeCount;
       bookingForm.layout.value = booking.layout;
 
@@ -1009,7 +1019,8 @@
     function handleSubmit() {
       const formData = new FormData(bookingForm);
       const payload = {
-        contactName: formData.get("contactName").trim(),
+        companyName: formData.get("companyName").trim(),
+        mainContact: formData.get("mainContact").trim(),
         attendeeCount: Number(formData.get("attendeeCount")),
         layout: formData.get("layout"),
         refreshments: formData.get("refreshments") === "on",
@@ -1042,8 +1053,11 @@
 
     function validateBooking(booking) {
       const issues = [];
-      if (!booking.contactName || booking.contactName.length < 2) {
-        issues.push("Contact name must be at least 2 characters long.");
+      if (!booking.companyName || booking.companyName.length < 2) {
+        issues.push("Company name must be at least 2 characters long.");
+      }
+      if (!booking.mainContact || booking.mainContact.length < 2) {
+        issues.push("Main point of contact must be at least 2 characters long.");
       }
       if (!Number.isFinite(booking.attendeeCount) || booking.attendeeCount < 1) {
         issues.push("Attendee count must be a positive number.");
