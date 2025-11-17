@@ -1,20 +1,34 @@
-# Staffordshire Chambers Room Hire (Static Demo)
+# Staffordshire Chambers Room Hire
 
-This repository now ships as a single self-contained HTML file that recreates the room-hire booking experience entirely in the browser. There are no build steps, databases, or dependencies—upload `index.html` to any static web host (or double-click it on your desktop) and you can demonstrate the full booking workflow immediately.
+This version of the prototype pairs the Staffordshire Chambers-themed calendar UI with a lightweight Express API so bookings are stored centrally and shared between all users. Data is persisted to `data/bookings.json`, so restarts keep existing reservations until you delete the file.
 
-## Features
+## Getting started
 
-- Seven Staffordshire Chambers rooms with capacity and default layout details.
-- Day-by-day calendar view showing bookings across all rooms in 30-minute slots.
-- Create, edit, and delete bookings with layout, refreshments, lunch, and equipment options.
-- Real-time conflict detection preventing overlapping bookings in the same room.
-- All data is held in memory for demo purposes and resets on page refresh.
+1. Install dependencies and start the server:
+   ```bash
+   npm install
+   npm run dev
+   ```
+   The command serves the static front-end at `http://localhost:4000` and exposes the API under `/api`.
 
-## Using the Demo
+2. Open the site in your browser and pick a day. Bookings are shown for the selected date; click empty cells or **New Booking** to create reservations.
 
-1. Open `index.html` in a modern browser (Chrome, Edge, Firefox, Safari).
-2. Use the navigation controls to change day or jump to a specific date.
-3. Click **New Booking** or tap an empty slot/time cell to open the booking popup (existing bookings open the editor for updates).
-4. Fill in the required information and save—new entries appear instantly in the calendar and list.
+3. Any updates you make are saved to `data/bookings.json`, so colleagues can refresh and see them immediately. Use the booking list buttons to edit or delete entries.
 
-To share or host the prototype, simply copy `index.html` to your web server or hosting provider. No additional configuration is required.
+## API overview
+
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| GET | `/api/rooms` | Returns the seven Staffordshire Chambers rooms. |
+| GET | `/api/bookings?date=YYYY-MM-DD` | Returns bookings for a specific day. |
+| POST | `/api/bookings` | Creates a booking (body matches the form fields). |
+| PUT | `/api/bookings/:id` | Updates an existing booking. |
+| DELETE | `/api/bookings/:id` | Removes a booking. |
+
+All payloads must use ISO datetimes that fall on the same day and align with 30-minute intervals. The server rejects overlapping bookings for any of the selected rooms.
+
+## Deployment tips
+
+- Copy the repository to your server, run `npm install`, and start the app with `npm run dev` (or `npm run start` for production). Use PM2 or a systemd service to keep it running.
+- Back up `data/bookings.json` to retain bookings during redeployments.
+- Behind a reverse proxy, forward HTTPS traffic to port 4000 so both the UI and API are available under the same hostname.
