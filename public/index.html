@@ -14,8 +14,11 @@
       :root {
         color-scheme: light;
         font-family: "Work Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: #f6f5f2;
+        background: #f5f5f5;
         color: #1d1d1b;
+        --brand: #e6234a;
+        --brand-dark: #b51637;
+        --brand-pale: #fde4ea;
       }
 
       * {
@@ -24,17 +27,17 @@
 
       body {
         margin: 0;
-        background: linear-gradient(180deg, #fff 0%, #f6f5f2 100%);
+        background: linear-gradient(180deg, #fff 0%, #f8f3f4 100%);
         min-height: 100vh;
         overflow-x: hidden;
       }
 
       header {
-        background: #7a1c5c;
+        background: var(--brand);
         color: white;
-        padding: 2rem 1.5rem 3rem;
+        padding: 2.5rem 1.5rem 5rem;
         text-align: center;
-        box-shadow: inset 0 -60px 80px rgba(0, 0, 0, 0.12);
+        box-shadow: inset 0 -60px 90px rgba(0, 0, 0, 0.15);
       }
 
       header h1 {
@@ -49,7 +52,7 @@
       }
 
       main {
-        margin: -60px auto 2rem;
+        margin: -40px auto 2.5rem;
         max-width: 1100px;
         padding: 0 1rem 3rem;
       }
@@ -57,7 +60,7 @@
       .card {
         background: white;
         border-radius: 18px;
-        box-shadow: 0 15px 45px rgba(20, 4, 25, 0.08);
+        box-shadow: 0 20px 55px rgba(27, 9, 14, 0.08);
         padding: 1.5rem;
       }
 
@@ -79,11 +82,11 @@
         border-radius: 999px;
         font-weight: 500;
         cursor: pointer;
-        background: #f1eef2;
+        background: #f6e5e9;
       }
 
       .toolbar .primary {
-        background: #7a1c5c;
+        background: var(--brand);
         color: white;
       }
 
@@ -95,7 +98,7 @@
         overflow-x: auto;
         background: white;
         border-radius: 18px;
-        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+        box-shadow: inset 0 0 0 1px rgba(230, 35, 74, 0.08);
       }
 
       table {
@@ -106,7 +109,7 @@
       thead th {
         position: sticky;
         top: 0;
-        background: #f8f1f5;
+        background: #fff5f7;
         padding: 0.75rem;
         font-weight: 600;
         font-size: 0.9rem;
@@ -115,10 +118,10 @@
 
       tbody th {
         width: 90px;
-        background: #faf7fa;
+        background: #fff9fa;
         font-weight: 500;
         font-size: 0.9rem;
-        color: #7a1c5c;
+        color: var(--brand);
       }
 
       td {
@@ -128,6 +131,7 @@
         padding: 0.35rem 0.5rem;
         height: 62px;
         position: relative;
+        vertical-align: top;
       }
 
       td button.cell-action {
@@ -140,28 +144,42 @@
         cursor: pointer;
       }
 
+      .booking-cell {
+        padding: 0.45rem 0.35rem;
+      }
+
       .booking-chip {
-        display: block;
-        border-radius: 10px;
-        padding: 0.45rem 0.6rem;
-        background: linear-gradient(120deg, #f2c744, #f9d97e);
-        color: #3d2a14;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-radius: 14px;
+        padding: 0.6rem 0.75rem;
+        background: linear-gradient(160deg, var(--brand) 0%, var(--brand-dark) 100%);
+        color: white;
         font-weight: 600;
         line-height: 1.3;
         text-align: left;
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
-        height: 100%;
-        overflow: hidden;
+        box-shadow: 0 12px 28px rgba(230, 35, 74, 0.35);
+        border: none;
+        cursor: pointer;
+      }
+
+      .booking-chip span {
+        display: block;
+        font-size: 0.95rem;
       }
 
       .booking-chip small {
         display: block;
         font-size: 0.8rem;
         font-weight: 500;
+        opacity: 0.95;
       }
 
       .empty-slot {
-        border: 1px dashed rgba(122, 28, 92, 0.25);
+        border: 1px dashed rgba(230, 35, 74, 0.35);
         border-radius: 12px;
         height: 100%;
       }
@@ -200,13 +218,13 @@
       }
 
       .booking-actions .edit {
-        background: #fddde1;
-        color: #7a1c5c;
+        background: var(--brand-pale);
+        color: var(--brand);
       }
 
       .booking-actions .delete {
-        background: #f0b3b3;
-        color: #5b0f28;
+        background: #ffd7dd;
+        color: #7f1025;
       }
 
       .modal-backdrop {
@@ -284,7 +302,7 @@
       }
 
       .pill-grid input {
-        accent-color: #7a1c5c;
+        accent-color: var(--brand);
       }
 
       .form-actions {
@@ -307,7 +325,7 @@
       }
 
       .form-actions .primary {
-        background: #7a1c5c;
+        background: var(--brand);
         color: white;
       }
 
@@ -556,7 +574,8 @@
       function renderCalendarBody() {
         calendarBody.innerHTML = "";
         const date = new Date(state.selectedDate + "T00:00:00");
-        timeSlots.forEach((slot, rowIndex) => {
+        const spanTracker = {};
+        timeSlots.forEach((slot) => {
           const row = document.createElement("tr");
           const timeCell = document.createElement("th");
           const slotDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), slot.getHours(), slot.getMinutes());
@@ -564,20 +583,36 @@
           row.appendChild(timeCell);
 
           state.rooms.forEach((room) => {
+            if (spanTracker[room.id] && spanTracker[room.id] > 0) {
+              spanTracker[room.id] -= 1;
+              return;
+            }
+
             const cell = document.createElement("td");
             const slotStart = new Date(slotDate);
             const booking = findBooking(room.id, slotStart);
             if (booking) {
-              const isStart = new Date(booking.startTime).getTime() === slotStart.getTime();
-              if (isStart) {
-                const chip = document.createElement("button");
-                chip.type = "button";
-                chip.className = "booking-chip";
-                chip.innerHTML = `<span>${booking.companyName}</span><small>${booking.attendeeCount} attendees</small>`;
-                chip.addEventListener("click", () => openModal(booking));
+              const bookingStart = new Date(booking.startTime);
+              if (bookingStart.getTime() === slotStart.getTime()) {
+                const durationSlots = Math.max(
+                  1,
+                  Math.round((new Date(booking.endTime) - bookingStart) / (30 * 60000))
+                );
+                cell.rowSpan = durationSlots;
+                cell.classList.add("booking-cell");
+                const chip = createBookingChip(booking);
                 cell.appendChild(chip);
+                spanTracker[room.id] = durationSlots - 1;
               } else {
-                cell.style.background = "rgba(122, 28, 92, 0.08)";
+                const remainingSlots = Math.max(
+                  1,
+                  Math.round((new Date(booking.endTime) - slotStart) / (30 * 60000))
+                );
+                cell.rowSpan = remainingSlots;
+                cell.classList.add("booking-cell");
+                const chip = createBookingChip(booking);
+                cell.appendChild(chip);
+                spanTracker[room.id] = remainingSlots - 1;
               }
             } else {
               const btn = document.createElement("button");
@@ -589,10 +624,20 @@
               btn.addEventListener("click", () => openModal(null, room.id, slotStart));
               cell.appendChild(btn);
             }
+
             row.appendChild(cell);
           });
           calendarBody.appendChild(row);
         });
+      }
+
+      function createBookingChip(booking) {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "booking-chip";
+        chip.innerHTML = `<span>${booking.companyName}</span><small>${booking.attendeeCount} attendees</small>`;
+        chip.addEventListener("click", () => openModal(booking));
+        return chip;
       }
 
       function renderBookingList() {
