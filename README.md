@@ -31,3 +31,47 @@ All payloads must use ISO datetimes that fall on the same day and align with 30-
 - Copy the repository to your server and start the app with `npm run dev` (or `npm run start` for production). Use PM2 or a systemd service to keep it running.
 - Back up `data/bookings.json` to retain bookings during redeployments.
 - Behind a reverse proxy, forward HTTPS traffic to port 4000 so both the UI and API are available under the same hostname.
+
+## Point 3 – point a subdomain at the app
+
+Follow these steps on the server that is already running the room-hire app on port `4000`.
+
+1. **Install and enable Nginx** (skip if already installed):
+   ```bash
+   sudo apt update
+   sudo apt install -y nginx
+   sudo systemctl enable --now nginx
+   ```
+
+2. **Create an Nginx server block for your subdomain** (replace `rooms.example.com` with your DNS name):
+   ```bash
+   sudo tee /etc/nginx/sites-available/room-hire.conf >/dev/null <<'EOF'
+   server {
+     listen 80;
+     server_name rooms.example.com;
+
+     location / {
+       proxy_pass http://127.0.0.1:4000;
+       proxy_set_header Host $host;
+       proxy_set_header X-Real-IP $remote_addr;
+       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+       proxy_set_header X-Forwarded-Proto $scheme;
+     }
+   }
+   EOF
+   ```
+
+3. **Enable the site and reload Nginx:**
+   ```bash
+   sudo ln -s /etc/nginx/sites-available/room-hire.conf /etc/nginx/sites-enabled/room-hire.conf
+   sudo nginx -t
+   sudo systemctl reload nginx
+   ```
+
+4. **(Optional) Add HTTPS** using Let’s Encrypt once DNS is pointing at the server:
+   ```bash
+   sudo apt install -y certbot python3-certbot-nginx
+   sudo certbot --nginx -d rooms.example.com
+   ```
+
+After these steps, visiting `http://rooms.example.com` will display the booking UI while the Node server continues listening privately on `127.0.0.1:4000`.
