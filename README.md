@@ -1,12 +1,11 @@
 # Staffordshire Chambers Room Hire
 
-This version of the prototype pairs the Staffordshire Chambers-themed calendar UI with a lightweight Express API so bookings are stored centrally and shared between all users. Data is persisted to `data/bookings.json`, so restarts keep existing reservations until you delete the file.
+This version of the prototype ships as a single Node.js server (no external npm dependencies) that serves the Staffordshire Chambers-themed UI and exposes a JSON API so bookings are stored centrally for everyone. Data lives in `data/bookings.json`, so restarts keep existing reservations until you delete the file.
 
 ## Getting started
 
-1. Install dependencies and start the server:
+1. Start the server (no `npm install` is required because there are zero external packages):
    ```bash
-   npm install
    npm run dev
    ```
    The command serves the static front-end at `http://localhost:4000` and exposes the API under `/api`.
@@ -29,6 +28,6 @@ All payloads must use ISO datetimes that fall on the same day and align with 30-
 
 ## Deployment tips
 
-- Copy the repository to your server, run `npm install`, and start the app with `npm run dev` (or `npm run start` for production). Use PM2 or a systemd service to keep it running.
+- Copy the repository to your server and start the app with `npm run dev` (or `npm run start` for production). Use PM2 or a systemd service to keep it running.
 - Back up `data/bookings.json` to retain bookings during redeployments.
 - Behind a reverse proxy, forward HTTPS traffic to port 4000 so both the UI and API are available under the same hostname.
