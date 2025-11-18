@@ -95,15 +95,16 @@
       }
 
       .calendar-scroll {
-        overflow-x: auto;
+        overflow-x: hidden;
         background: white;
         border-radius: 18px;
         box-shadow: inset 0 0 0 1px rgba(230, 35, 74, 0.08);
       }
 
       table {
-        width: max(900px, 100%);
+        width: 100%;
         border-collapse: collapse;
+        table-layout: fixed;
       }
 
       thead th {
@@ -116,8 +117,12 @@
         text-align: left;
       }
 
+      thead th:first-child,
       tbody th {
-        width: 90px;
+        width: 70px;
+      }
+
+      tbody th {
         background: #fff9fa;
         font-weight: 500;
         font-size: 0.9rem;
@@ -125,11 +130,12 @@
       }
 
       td {
-        min-width: 160px;
+        min-width: auto;
+        width: auto;
         border-top: 1px solid #f0e7ee;
         border-left: 1px solid #f0e7ee;
-        padding: 0.2rem 0.35rem;
-        height: 42px;
+        padding: 0.15rem 0.25rem;
+        height: 38px;
         position: relative;
         vertical-align: top;
       }
@@ -347,14 +353,6 @@
         .toolbar {
           flex-direction: column;
           align-items: flex-start;
-        }
-
-        table {
-          width: max(750px, 100%);
-        }
-
-        body {
-          overflow-x: hidden;
         }
       }
     </style>
