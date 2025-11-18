@@ -69,6 +69,13 @@ Follow these steps on the server that is already running the room-hire app on po
    ```
 
 4. **(Optional) Add HTTPS** using Let’s Encrypt once DNS is pointing at the server:
+   - Make sure nothing else is bound to port 80 before running Certbot. If you see errors such as `bind() to 0.0.0.0:80 failed (98: Address already in use)`, find and stop the conflicting service:
+     ```bash
+     sudo ss -tulpn | grep ':80'
+     sudo systemctl stop <service-name>
+     # or stop any temporary process that is listening on port 80
+     ```
+     After Certbot succeeds you can start the service again if needed.
    ```bash
    sudo apt install -y certbot python3-certbot-nginx
    sudo certbot --nginx -d rooms.example.com
