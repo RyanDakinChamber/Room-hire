@@ -307,9 +307,10 @@
 
       .form-actions {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
         gap: 0.75rem;
         margin-top: 1rem;
+        flex-wrap: wrap;
       }
 
       .form-actions button {
@@ -318,6 +319,11 @@
         padding: 0.6rem 1.4rem;
         font-weight: 600;
         cursor: pointer;
+      }
+
+      .form-actions .danger {
+        background: #ffdfe6;
+        color: #8c0f2c;
       }
 
       .form-actions .secondary {
@@ -405,7 +411,7 @@
           </label>
           <label>
             Number of attendees
-            <input type="number" name="attendeeCount" min="1" value="1" required />
+            <input type="number" name="attendeeCount" min="0" value="0" required />
           </label>
           <label>
             Preferred layout
@@ -454,8 +460,11 @@
             <textarea name="notes" rows="2"></textarea>
           </label>
           <div class="form-actions">
-            <button type="button" class="secondary" id="cancel-form">Cancel</button>
-            <button type="submit" class="primary" id="save-booking">Save booking</button>
+            <button type="button" class="danger" id="delete-booking" hidden>Delete booking</button>
+            <div style="margin-left:auto;display:flex;gap:0.75rem;flex-wrap:wrap;">
+              <button type="button" class="secondary" id="cancel-form">Cancel</button>
+              <button type="submit" class="primary" id="save-booking">Save booking</button>
+            </div>
           </div>
         </form>
       </div>
@@ -488,6 +497,7 @@
       const selectedDateLabel = document.getElementById("selected-date-label");
       const datePicker = document.getElementById("date-picker");
       const errorPanel = document.getElementById("form-errors");
+      const deleteButton = document.getElementById("delete-booking");
 
       const api = {
         async rooms() {
@@ -713,6 +723,14 @@
           bookingForm.querySelectorAll('input[name="rooms"]').forEach((input) => {
             input.checked = booking.rooms.includes(input.value);
           });
+          deleteButton.hidden = false;
+          deleteButton.onclick = async () => {
+            if (confirm("Delete this booking?")) {
+              await api.deleteBooking(booking.id);
+              closeModal();
+              await loadBookings();
+            }
+          };
         } else {
           const selectedDate = state.selectedDate;
           const defaultStart = slotStart ? slotStart : new Date(selectedDate + "T08:00");
@@ -723,6 +741,8 @@
           bookingForm.querySelectorAll('input[name="rooms"]').forEach((input) => {
             input.checked = roomId ? input.value === roomId : false;
           });
+          deleteButton.hidden = true;
+          deleteButton.onclick = null;
         }
 
         toggleDetail(bookingForm.refreshments, document.getElementById("refreshments-details"));
