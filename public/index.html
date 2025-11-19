@@ -386,10 +386,6 @@
             <input type="text" name="contactName" required />
           </label>
           <label>
-            Number of attendees
-            <input type="number" name="attendeeCount" min="0" value="0" required />
-          </label>
-          <label>
             Preferred layout
             <select name="layout">
               <option value="boardroom">Boardroom</option>
@@ -622,7 +618,7 @@
         const chip = document.createElement("button");
         chip.type = "button";
         chip.className = "booking-chip";
-        chip.innerHTML = `<span>${booking.companyName}</span><small>${booking.attendeeCount} attendees</small>`;
+        chip.innerHTML = `<span>${booking.companyName}</span><small>${booking.contactName}</small>`;
         chip.addEventListener("click", () => openModal(booking));
         return chip;
       }
@@ -644,7 +640,7 @@
               <div class="booking-row">
                 <div class="booking-meta">
                   <strong>${booking.companyName}</strong>
-                  <div>${booking.contactName} • ${booking.attendeeCount} attendees</div>
+                  <div>${booking.contactName}</div>
                   <div><span>Time:</span> ${start} – ${end}</div>
                   <div><span>Rooms:</span> ${roomNames}</div>
                 </div>
@@ -685,7 +681,6 @@
         if (booking) {
           bookingForm.companyName.value = booking.companyName;
           bookingForm.contactName.value = booking.contactName;
-          bookingForm.attendeeCount.value = booking.attendeeCount;
           bookingForm.layout.value = booking.layout;
           bookingForm.notes.value = booking.notes || "";
           bookingForm.refreshments.checked = booking.refreshments;
@@ -767,7 +762,6 @@
         return {
           companyName: formData.get("companyName").trim(),
           contactName: formData.get("contactName").trim(),
-          attendeeCount: Number(formData.get("attendeeCount")),
           layout: formData.get("layout"),
           rooms,
           startTime: new Date(formData.get("startTime")).toISOString(),

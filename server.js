@@ -55,15 +55,7 @@ const isHalfHourBoundary = (date) => {
 };
 
 const validateBookingPayload = (payload) => {
-  const required = [
-    "companyName",
-    "contactName",
-    "attendeeCount",
-    "layout",
-    "rooms",
-    "startTime",
-    "endTime"
-  ];
+  const required = ["companyName", "contactName", "layout", "rooms", "startTime", "endTime"];
 
   const missing = required.filter((field) =>
     payload[field] === undefined || payload[field] === null || payload[field] === ""
@@ -198,7 +190,6 @@ const handleApiRequest = async (req, res, url) => {
         id: randomUUID(),
         companyName: payload.companyName,
         contactName: payload.contactName,
-        attendeeCount: Number(payload.attendeeCount),
         layout: payload.layout,
         refreshments: Boolean(payload.refreshments),
         refreshmentsDetails: payload.refreshmentsDetails || "",
@@ -233,12 +224,18 @@ const handleApiRequest = async (req, res, url) => {
       detectConflicts(bookings, payload, id);
       const updated = {
         ...bookings[index],
-        ...payload,
-        attendeeCount: Number(payload.attendeeCount),
+        companyName: payload.companyName,
+        contactName: payload.contactName,
+        layout: payload.layout,
+        refreshments: Boolean(payload.refreshments),
+        refreshmentsDetails: payload.refreshmentsDetails || "",
+        lunch: Boolean(payload.lunch),
+        lunchDetails: payload.lunchDetails || "",
         equipment: Array.isArray(payload.equipment) ? payload.equipment : [],
         rooms: payload.rooms,
         startTime: payload.startTime,
         endTime: payload.endTime,
+        notes: payload.notes || "",
         updatedAt: new Date().toISOString()
       };
       bookings[index] = updated;
