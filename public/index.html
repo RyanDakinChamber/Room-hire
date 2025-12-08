@@ -803,15 +803,15 @@
       });
 
       function changeDay(delta) {
-        const current = new Date(state.selectedDate + "T00:00:00");
-        current.setDate(current.getDate() + delta);
+        const current = new Date(state.selectedDate + "T00:00:00Z");
+        current.setUTCDate(current.getUTCDate() + delta);
         state.selectedDate = current.toISOString().slice(0, 10);
         updateDateUI();
         loadBookings();
       }
 
       function updateDateUI() {
-        const date = new Date(state.selectedDate + "T00:00:00");
+        const date = new Date(state.selectedDate + "T00:00:00Z");
         const formatter = new Intl.DateTimeFormat(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
         selectedDateLabel.textContent = formatter.format(date);
         datePicker.value = state.selectedDate;
