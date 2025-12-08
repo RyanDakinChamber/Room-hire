@@ -476,6 +476,12 @@
 
       datePicker.max = maxBookingDate;
 
+      const formatLocalInputValue = (value) => {
+        const date = new Date(value);
+        const pad = (num) => String(num).padStart(2, "0");
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+      };
+
       const api = {
         async rooms() {
           const res = await fetch("/api/rooms");
@@ -694,8 +700,8 @@
           bookingForm.refreshmentsDetails.value = booking.refreshmentsDetails || "";
           bookingForm.lunch.checked = booking.lunch;
           bookingForm.lunchDetails.value = booking.lunchDetails || "";
-          startInput.value = new Date(booking.startTime).toISOString().slice(0, 16);
-          endInput.value = new Date(booking.endTime).toISOString().slice(0, 16);
+          startInput.value = formatLocalInputValue(booking.startTime);
+          endInput.value = formatLocalInputValue(booking.endTime);
           bookingForm.querySelectorAll('input[name="equipment"]').forEach((input) => {
             input.checked = booking.equipment?.includes(input.value);
           });
@@ -714,8 +720,8 @@
           const selectedDate = state.selectedDate;
           const defaultStart = slotStart ? slotStart : new Date(selectedDate + "T08:00");
           const defaultEnd = new Date(defaultStart.getTime() + 60 * 60000);
-          startInput.value = new Date(defaultStart).toISOString().slice(0, 16);
-          endInput.value = new Date(defaultEnd).toISOString().slice(0, 16);
+          startInput.value = formatLocalInputValue(defaultStart);
+          endInput.value = formatLocalInputValue(defaultEnd);
           bookingForm.querySelectorAll('input[name="equipment"]').forEach((input) => (input.checked = false));
           bookingForm.querySelectorAll('input[name="rooms"]').forEach((input) => {
             input.checked = roomId ? input.value === roomId : false;
@@ -771,8 +777,8 @@
           contactName: formData.get("contactName").trim(),
           layout: formData.get("layout"),
           rooms,
-          startTime: new Date(formData.get("startTime")).toISOString(),
-          endTime: new Date(formData.get("endTime")).toISOString(),
+          startTime: formData.get("startTime"),
+          endTime: formData.get("endTime"),
           refreshments: bookingForm.refreshments.checked,
           refreshmentsDetails: formData.get("refreshmentsDetails") || "",
           lunch: bookingForm.lunch.checked,
