@@ -450,6 +450,8 @@
         selectedDate: new Date().toISOString().slice(0, 10)
       };
 
+      const maxBookingDate = "2025-12-31";
+
       const timeSlots = (() => {
         const slots = [];
         const start = new Date();
@@ -471,6 +473,8 @@
       const datePicker = document.getElementById("date-picker");
       const errorPanel = document.getElementById("form-errors");
       const deleteButton = document.getElementById("delete-booking");
+
+      datePicker.max = maxBookingDate;
 
       const api = {
         async rooms() {
@@ -677,6 +681,9 @@
 
         const startInput = bookingForm.querySelector('[name="startTime"]');
         const endInput = bookingForm.querySelector('[name="endTime"]');
+
+        startInput.max = `${maxBookingDate}T23:59`;
+        endInput.max = `${maxBookingDate}T23:59`;
 
         if (booking) {
           bookingForm.companyName.value = booking.companyName;
