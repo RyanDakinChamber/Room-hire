@@ -522,6 +522,13 @@
         }
       };
 
+      function normalizeRoomIds(rooms = []) {
+        if (!Array.isArray(rooms)) return [];
+        return rooms
+          .map((room) => (typeof room === "string" ? room : room?.id))
+          .filter(Boolean);
+      }
+
       async function loadRooms() {
         const { rooms } = await api.rooms();
         state.rooms = rooms;
@@ -531,7 +538,10 @@
 
       async function loadBookings() {
         const { bookings } = await api.bookings(state.selectedDate);
-        state.bookings = bookings;
+        state.bookings = bookings.map((booking) => ({
+          ...booking,
+          rooms: normalizeRoomIds(booking.rooms)
+        }));
         renderCalendarBody();
         renderBookingList();
       }
@@ -692,6 +702,7 @@
         endInput.max = `${maxBookingDate}T23:59`;
 
         if (booking) {
+          const selectedRooms = normalizeRoomIds(booking.rooms);
           bookingForm.companyName.value = booking.companyName;
           bookingForm.contactName.value = booking.contactName;
           bookingForm.layout.value = booking.layout;
@@ -706,7 +717,7 @@
             input.checked = booking.equipment?.includes(input.value);
           });
           bookingForm.querySelectorAll('input[name="rooms"]').forEach((input) => {
-            input.checked = booking.rooms.includes(input.value);
+            input.checked = selectedRooms.includes(input.value);
           });
           deleteButton.hidden = false;
           deleteButton.onclick = async () => {

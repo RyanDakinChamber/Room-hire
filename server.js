@@ -54,6 +54,15 @@ const isHalfHourBoundary = (date) => {
   return minutes === 0 || minutes === 30;
 };
 
+const normalizeRoomIds = (value) => {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value
+    .map((room) => (typeof room === "string" ? room : room?.id))
+    .filter(Boolean);
+};
+
 const validateBookingPayload = (payload) => {
   const required = ["companyName", "contactName", "layout", "rooms", "startTime", "endTime"];
 
@@ -66,7 +75,9 @@ const validateBookingPayload = (payload) => {
     throw error;
   }
 
-  if (!Array.isArray(payload.rooms) || payload.rooms.length === 0) {
+  payload.rooms = normalizeRoomIds(payload.rooms);
+
+  if (payload.rooms.length === 0) {
     const error = new Error("At least one room must be selected");
     error.status = 400;
     throw error;
