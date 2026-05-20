@@ -41,8 +41,25 @@ const ensureDataFile = async () => {
 
 const loadBookings = async () => {
   await ensureDataFile();
-  const raw = await fs.readFile(DATA_FILE, "utf-8");
-  return JSON.parse(raw).bookings;
+  try {
+    const raw = await fs.readFile(DATA_FILE, "utf-8");
+    const parsed = JSON.parse(raw);
+    if (!parsed || !Array.isArray(parsed.bookings)) {
+      throw new Error("Invalid bookings format");
+    }
+    return parsed.bookings;
+  } catch (error) {
+    const backupPath = path.join(DATA_DIR, `bookings.invalid.${Date.now()}.json`);
+    try {
+      const raw = await fs.readFile(DATA_FILE, "utf-8");
+      await fs.writeFile(backupPath, raw);
+    } catch {
+      // Ignore backup errors so recovery can continue.
+    }
+    await saveBookings([]);
+    console.warn(`Recovered bookings storage after read/parse failure: ${error.message}`);
+    return [];
+  }
 };
 
 const saveBookings = async (bookings) => {
@@ -312,6 +329,6 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(PORT, () => {
-  console.log(`Room Hire server listening on port ${PORT}`);
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`Room Hire server listening on http://0.0.0.0:${PORT}`);
 });
